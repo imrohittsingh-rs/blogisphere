@@ -8,7 +8,37 @@
   </head>
   <body>
     <%- include("./partials/nav") %>
-    
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="card-body p-4 p-md-5">
+              <h2 class="card-title fw-bold mb-4">Update Blog</h2>
+              <% if (error) { %>
+                <div class="alert alert-danger" role="alert">
+                  <%= error %>
+                </div>
+              <% } %>
+              <form action="/blog/update/<%= blog._id %>" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <label for="title" class="form-label">Title</label>
+                  <input type="text" class="form-control" id="title" name="title" value="<%= blog.title %>" required />
+                </div>
+                <div class="mb-3">
+                  <label for="body" class="form-label">Body</label>
+                  <textarea class="form-control" id="body" name="body" rows="5" required><%= blog.body %></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="coverImage" class="form-label">Cover Image</label>
+                  <input type="file" class="form-control" id="coverImage" name="coverImage" value="<%= blog.coverImageUrl %>" />
+                </div>
+                <button type="submit" class="btn btn-primary">Update Blog</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <%- include("./partials/script") %>
   </body>
 </html>

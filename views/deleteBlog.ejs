@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include("./partials/head") %>
+    <title>Add New Blog Page</title>
+  </head>
+  <body>
+    <%- include("./partials/nav") %>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="card-body p-4 p-md-5">
+              <h2 class="card-title fw-bold mb-4">Delete Blog</h2>
+              <% if (error) { %>
+                <div class="alert alert-danger" role="alert">
+                  <%= error %>
+                </div>
+              <% } %>
+              <form action="/blog/delete/<%= blog._id %>" method="POST">
+                <p>Are you sure you want to delete the blog titled "<%= blog.title %>"?</p>
+                <button type="submit" class="btn btn-danger">Delete Blog</button>
+                <a href="/blog/<%= blog._id %>" class="btn btn-secondary">Cancel</a>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%- include("./partials/script") %>
+  </body>
+</html>

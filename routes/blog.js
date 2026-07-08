@@ -5,6 +5,8 @@ import {
   handleCreateBlog,
   handleGetBlogById,
   handleUpdateBlog,
+  showUpdateBlogPage,
+  showDeleteBlogPage,
   handleDeleteBlog,
 } from "../controllers/blog.js";
 
@@ -21,13 +23,19 @@ router.post(
   handleCreateBlog,
 );
 
-router.get("/:id", checkUserAuthentication, handleGetBlogById);
+router.get("/update/:id", checkUserAuthentication, showUpdateBlogPage);
 
-router.get("/update/:id", checkUserAuthentication, (req, res) => {
-  return res.render("updateBlog", { error: null, blogId: req.params.id });
-});
-router.post("/update/:id", checkUserAuthentication, handleUpdateBlog);
+router.post(
+  "/update/:id",
+  checkUserAuthentication,
+  upload.single("coverImage"),
+  handleUpdateBlog,
+);
+
+router.get("/delete/:id", checkUserAuthentication, showDeleteBlogPage);
 
 router.post("/delete/:id", checkUserAuthentication, handleDeleteBlog);
+
+router.get("/:id", checkUserAuthentication, handleGetBlogById);
 
 export default router;
