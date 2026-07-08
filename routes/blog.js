@@ -1,18 +1,33 @@
-const express = require("express");
-const { checkUserAuthentication } = require("../middlewares/auth");
+import { Router } from "express";
+import { checkUserAuthentication } from "../middlewares/auth.js";
+import { upload } from "../middlewares/multer.js";
+import {
+  handleCreateBlog,
+  handleGetBlogById,
+  handleUpdateBlog,
+  handleDeleteBlog,
+} from "../controllers/blog.js";
 
-const router = express.Router();
+const router = Router();
 
-router.get("/add-new", checkUserAuthentication, (req, res) => {
-  return res.render("addBlog", { user: req.user, error: null });
+router.get("/new", checkUserAuthentication, (req, res) => {
+  return res.render("addBlog", { error: null });
 });
 
-router.get("/update", checkUserAuthentication, (req, res) => {
-  return res.render("updateBlog", { user: req.user, error: null });
-});
+router.post(
+  "/",
+  checkUserAuthentication,
+  upload.single("coverImage"),
+  handleCreateBlog,
+);
 
-router.get("/delete", checkUserAuthentication, (req, res) => {
-  return res.render("deleteBlog", { user: req.user, error: null });
-});
+router.get("/:id", checkUserAuthentication, handleGetBlogById);
 
-module.exports = router;
+router.get("/update/:id", checkUserAuthentication, (req, res) => {
+  return res.render("updateBlog", { error: null, blogId: req.params.id });
+});
+router.post("/update/:id", checkUserAuthentication, handleUpdateBlog);
+
+router.post("/delete/:id", checkUserAuthentication, handleDeleteBlog);
+
+export default router;

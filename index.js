@@ -1,10 +1,3 @@
-// const express = require("express");
-// const path = require("path");
-// const mongoose = require("mongoose");
-// const cookieParser = require("cookie-parser");
-
-// const staticRouter = require("./routes/staticRouter");
-// const userRouter = require("./routes/user");
 import dotenv from "dotenv";
 import app from "./app.js";
 import connectToDB from "./db/index.js";

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <%- include("./partials/head") %>
+  <title>Sign Out</title>
+  
+</head>
+<body>
+  <%- include("./partials/nav") %>
+  <div>
+    <h1 class="text-center mt-5">You have been signed out successfully.</h1>
+    <p class="text-center mt-3">Thank you for using our service. We hope to see you again soon!</p>
+    <div class="text-center mt-4">
+      <a href="/user/login" class="btn btn-primary">Sign In Again</a>
+    </div>
+  </div>
+  <%- include("./partials/script") %>
+</body>
+</html>

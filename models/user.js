@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
@@ -28,6 +29,19 @@ const userSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+// the hook runs on every save()
+userSchema.pre("save", async function () {
+  const user = this;
+  if (!user.isModified("password")) return;
+
+  user.password = await bcrypt.hash(user.password, 10);
+});
+
+// add instance methods to documents
+userSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+export default User;

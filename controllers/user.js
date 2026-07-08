@@ -1,6 +1,6 @@
-import User from "../models/user.js"
+import User from "../models/user.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { generateTokenForUser } from "../utils/authentication.js";
 
 async function handleUserSignUp(req, res) {
   const { fullname, email, password } = req.body;
@@ -8,16 +8,17 @@ async function handleUserSignUp(req, res) {
   const existingUser = await User.findOne({ email });
 
   if (existingUser)
-    return res.render("signup", { error: "Email already registered" });
+    return res.render("signup", {
+      error: "Email already registered",
+    });
 
-  const hashedPassword = await bcrypt.hash(password, 10);
   await User.create({
     fullname,
     email,
-    password: hashedPassword,
+    password,
   });
 
-  return res.redirect("/login");
+  return res.redirect("/user/login");
 }
 
 async function handleUserLogin(req, res) {
@@ -29,24 +30,21 @@ async function handleUserLogin(req, res) {
     });
   }
 
-  const isMatched = await bcrypt.compare(password, user.password);
+  const isMatched = await user.isPasswordCorrect(password);
   if (!isMatched) {
     return res.render("login", {
       error: "Incorrect password, please try again",
     });
   }
 
-  const payload = {
-    id: user._id,
-    email: user.email,
-    name: user.fullname,
-  };
-  const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "1h"});
+  const token = generateTokenForUser(user);
   res.cookie("uid", token);
   return res.redirect("/");
 }
 
-module.exports = {
-  handleUserSignUp,
-  handleUserLogin,
-};
+function handleUserSignOut(req, res) {
+  res.clearCookie("uid");
+  return res.render("signout");
+}
+
+export { handleUserSignUp, handleUserLogin, handleUserSignOut };
