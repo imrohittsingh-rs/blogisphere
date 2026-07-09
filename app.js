@@ -7,6 +7,7 @@ import staticRouter from "./routes/staticRouter.js";
 import userRouter from "./routes/user.js";
 import blogRouter from "./routes/blog.js";
 import { checkForAuthentication } from "./middlewares/auth.js";
+
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);

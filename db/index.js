@@ -6,6 +6,7 @@ const connectToDB = async (url) => {
     console.log("Connected to MongoDB successfully");
   } catch (err) {
     console.error("MongoDB connection error", err);
+    process.exit(1); // Stop the server if DB connection fails
   }
 };
 
