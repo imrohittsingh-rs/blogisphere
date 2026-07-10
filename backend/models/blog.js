@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
 
 const blogSchema = new Schema(
   {
@@ -14,9 +14,9 @@ const blogSchema = new Schema(
       type: String,
       required: false,
     },
-    createby: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   {
@@ -24,6 +24,6 @@ const blogSchema = new Schema(
   },
 );
 
-const Blog = model("blog", blogSchema);
+const Blog = model("Blog", blogSchema);
 
 export default Blog;

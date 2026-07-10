@@ -4,12 +4,12 @@ import ApiResponse from "../utils/apiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 const handleCreateBlog = asyncHandler(async (req, res) => {
-  const { title, content } = req.body;
+  const { title, body } = req.body;
 
   const blog = await Blog.create({
     title,
-    body: content,
-    createby: req.user._id,
+    body,
+    createdBy: req.user.id,
     coverImageUrl: req.file ? `/uploads/${req.file.filename}` : null,
   });
 
@@ -19,7 +19,7 @@ const handleCreateBlog = asyncHandler(async (req, res) => {
 })
 
 const handleAllBlogs = asyncHandler(async (req, res) => {
-  const blogs = await Blog.find({}).populate("createdby", "fullname", "email");
+  const blogs = await Blog.find({}).populate("createdBy", "fullname email");
 
   return res
     .status(200)
@@ -27,7 +27,7 @@ const handleAllBlogs = asyncHandler(async (req, res) => {
 })
 
 const handleGetBlogById = asyncHandler(async (req, res) => {
-  const blog = await Blog.findById(req.params.id).populate("createdby", "fullname", "email");
+  const blog = await Blog.findById(req.params.id).populate("createdBy", "fullname email");
 
   if (!blog) {
     throw new ApiError(404, "Blog not found")
@@ -45,7 +45,7 @@ const handleUpdateBlog = asyncHandler(async (req, res) => {
   }
 
   // Authorization check
-  if (blog.createby.toString() !== req.user._id.toString()) {
+  if (blog.createdBy.toString() !== req.user.id.toString()) {
     throw new ApiError(
       403,
       "You are not authorized to update this blog"
@@ -73,7 +73,7 @@ const handleDeleteBlog = asyncHandler(async (req, res) => {
   }
 
   // Authorization check
-  if (blog.createby.toString() !== req.user._id.toString()) {
+  if (blog.createdBy.toString() !== req.user.id.toString()) {
     throw new ApiError(
       403,
       "You are not authorized to delete this blog"
