@@ -45,7 +45,7 @@ const handleUserLogin = asyncHandler(async (req, res) => {
 })
 
 const handleUserSignOut = asyncHandler(async (req, res) => {
-  res.clearCookie("uid");
+  res.clearCookie(process.env.COOKIE_NAME);
   return res
     .status(200)
     .json(new ApiResponse(200, {}, "User logged out successfully"))
