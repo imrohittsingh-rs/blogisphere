@@ -1,41 +1,55 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BlogContext } from '../context/BlogContext';
+import { useAuth } from "../context/AuthContext.jsx";
+import { MdOutlineErrorOutline } from "react-icons/md";
+import { FiLoader } from "react-icons/fi";
+import toast from 'react-hot-toast';
 
 const SignUp = () => {
-  const { signUp } = useContext(BlogContext);
-  const [fullname, setFullname] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { register } = useAuth();
+  const [formData, setFormData] = useState({
+    fullname: "",
+    email: "",
+    password: "",
+  });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    if (!fullname || !email || !password) {
+    if (!formData.fullname || !formData.email || !formData.password) {
       setError("Please fill in all fields");
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long");
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long");
       return;
     }
 
     setLoading(true);
-    // Simulate brief network delay for realism
-    setTimeout(() => {
-      const res = signUp(fullname, email, password);
+
+    try {
+      await register(formData);
+      toast.success("Account created successfully! Please log in.");
+      navigate("/login");
+    } catch (error) {
+      const msg = error.response?.data?.message || "Something went wrong!";
+      setError(msg);
+      toast.error(msg);
+    } finally {
       setLoading(false);
-      if (res.success) {
-        navigate('/');
-      } else {
-        setError(res.error);
-      }
-    }, 600);
+    }
   };
 
   return (
@@ -50,9 +64,7 @@ const SignUp = () => {
 
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 flex-shrink-0">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-            </svg>
+            <MdOutlineErrorOutline size={18} />
             <span>{error}</span>
           </div>
         )}
@@ -62,11 +74,12 @@ const SignUp = () => {
             <label className="block text-sm font-semibold text-slate-700 mb-2">
               Full Name
             </label>
-            <input 
-              type="text" 
-              placeholder="Sarah Connor" 
-              value={fullname}
-              onChange={(e) => setFullname(e.target.value)}
+            <input
+              type="text"
+              name="fullname"
+              placeholder="Rohit Singh"
+              value={formData.fullname}
+              onChange={handleChange}
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm bg-slate-50/50"
               required
             />
@@ -76,11 +89,12 @@ const SignUp = () => {
             <label className="block text-sm font-semibold text-slate-700 mb-2">
               Email Address
             </label>
-            <input 
-              type="email" 
-              placeholder="you@example.com" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+            <input
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={handleChange}
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm bg-slate-50/50"
               required
             />
@@ -90,27 +104,26 @@ const SignUp = () => {
             <label className="block text-sm font-semibold text-slate-700 mb-2">
               Password
             </label>
-            <input 
-              type="password" 
-              placeholder="•••••••• (Min. 6 chars)" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+            <input
+              type="password"
+              name="password"
+              placeholder="•••••••• (Min. 8 chars)"
+              minLength={8}
+              value={formData.password}
+              onChange={handleChange}
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm bg-slate-50/50"
               required
             />
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 cursor-pointer"
           >
             {loading ? (
               <>
-                <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
+                <FiLoader className="animate-spin h-5 w-5 text-white" />
                 Creating Account...
               </>
             ) : "Sign Up"}

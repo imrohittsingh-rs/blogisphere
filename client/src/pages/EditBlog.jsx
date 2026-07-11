@@ -1,169 +1,204 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { BlogContext } from '../context/BlogContext';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from '../context/AuthContext.jsx';
+import { FiLoader } from "react-icons/fi";
+import { MdOutlineErrorOutline } from "react-icons/md";
+import { getBlogById, updateBlog } from "../services/blogService";
+import toast from 'react-hot-toast';
 
 const EditBlog = () => {
   const { id } = useParams();
-  const { currentUser, blogs, updateBlog } = useContext(BlogContext);
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
-  const blog = blogs.find(b => b._id === id);
+  const [formData, setFormData] = useState({
+    title: "",
+    body: "",
+  });
+  const [coverImage, setCoverImage] = useState(null);
+  const [newCoverImage, setNewCoverImage] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+  const [error, setError] = useState("");
 
-  const [title, setTitle] = useState('');
-  const [coverImageUrl, setCoverImageUrl] = useState('');
-  const [body, setBody] = useState('');
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  // Initialize and check authorization
   useEffect(() => {
-    if (!currentUser) {
-      navigate('/login');
+    if (authLoading) return;
+
+    if (!user) {
+      navigate("/login");
       return;
     }
-
-    if (!blog) {
-      navigate('/');
-      return;
-    }
-
-    // Check authorization: only creator or admin can edit
-    if (blog.createby._id !== currentUser._id && currentUser.role !== "ADMIN") {
-      navigate('/');
-      return;
-    }
-
-    setTitle(blog.title);
-    setCoverImageUrl(blog.coverImageUrl || '');
-    setBody(blog.body);
-  }, [blog, currentUser, navigate]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError(null);
-
-    if (!title.trim() || !body.trim()) {
-      setError("Title and content body are required.");
-      return;
-    }
-
-    setLoading(true);
-
-    // Simulate submission delay
-    setTimeout(() => {
-      const res = updateBlog(id, title, body, coverImageUrl);
-      setLoading(false);
-      if (res.success) {
-        navigate(`/blog/${id}`);
-      } else {
-        setError(res.error);
+    
+    const fetchBlog = async () => {
+      try {
+        const res = await getBlogById(id);
+        setFormData({
+          title: res.data.title,
+          body: res.data.body,
+        });
+        setCoverImage(res.data.coverImageUrl);
+      } catch (error) {
+        setError(error.response?.data?.message || "Failed to load blog");
+      } finally {
+        setLoading(false);
       }
-    }, 600);
+    };
+    fetchBlog();
+  }, [id, user, authLoading, navigate]);
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
-  if (!currentUser || !blog) return null;
+  const handleImageChange = (e) => {
+    setNewCoverImage(e.target.files[0]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!formData.title || !formData.body) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    setUpdating(true);
+
+    try {
+      const data = new FormData();
+      data.append("title", formData.title);
+      data.append("body", formData.body);
+      if (newCoverImage) {
+        data.append("coverImage", newCoverImage);
+      }
+
+      await updateBlog(id, data);
+      toast.success("Blog updated successfully!");
+      navigate(`/blog/${id}`);
+    } catch (err) {
+      const msg = err.response?.data?.message || "Failed to update blog";
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3">
+        <FiLoader className="animate-spin h-10 w-10 text-blue-600" />
+        <p className="text-slate-500 font-medium text-sm">Loading blog data...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12 animate-in fade-in duration-300">
-      <div className="mb-8">
-        <h1 className="text-3xl font-black text-slate-900 tracking-tight">Edit Your Article</h1>
-        <p className="text-slate-500 text-sm mt-1">
-          Make updates to your article structure, text, or cover image.
-        </p>
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-slate-50">
+      <div className="w-full max-w-2xl bg-white p-8 rounded-2xl border border-slate-100 shadow-xl">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-black text-slate-800 tracking-tight">Edit Blog Post</h2>
+          <p className="text-slate-500 text-sm mt-2">
+            Update your story, cover image, and details below.
+          </p>
+        </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm flex items-center gap-3">
+            <MdOutlineErrorOutline size={18} />
+            <span>{error}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Title
+            </label>
+            <input
+              type="text"
+              name="title"
+              placeholder="Enter a catchy title..."
+              value={formData.title}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm bg-slate-50/50"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Body
+            </label>
+            <textarea
+              name="body"
+              placeholder="Write your story here..."
+              value={formData.body}
+              onChange={handleChange}
+              rows="8"
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm bg-slate-50/50 resize-y"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Cover Image
+            </label>
+            {coverImage && !newCoverImage && (
+              <div className="mb-3 relative rounded-xl overflow-hidden border border-slate-200 h-32 w-48">
+                <img
+                  src={`${import.meta.env.VITE_BACKEND_URL}${coverImage}`}
+                  alt="Current cover"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-2 left-2 bg-slate-900/60 backdrop-blur-sm text-white px-2 py-0.5 rounded text-[10px] font-semibold">
+                  Current Image
+                </div>
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm bg-slate-50/50 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            />
+            {newCoverImage && (
+              <p className="text-xs text-emerald-600 font-medium mt-2 ml-1">
+                New image selected: {newCoverImage.name}
+              </p>
+            )}
+          </div>
+
+          <div className="flex gap-4 pt-4">
+            <button
+              type="button"
+              onClick={() => navigate(`/blog/${id}`)}
+              className="w-1/2 border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold py-3 px-4 rounded-xl transition-all duration-200 text-center text-sm cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={updating}
+              className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 cursor-pointer"
+            >
+              {updating ? (
+                <>
+                  <FiLoader className="animate-spin h-5 w-5 text-white" />
+                  Saving...
+                </>
+              ) : "Save Changes"}
+            </button>
+          </div>
+        </form>
       </div>
-
-      {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm flex items-center gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 flex-shrink-0">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-          </svg>
-          <span>{error}</span>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">
-            Article Title
-          </label>
-          <input 
-            type="text" 
-            placeholder="e.g. Mastering React Server Components" 
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm bg-slate-50/50"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center justify-between">
-            <span>Cover Image URL (Optional)</span>
-            <span className="text-[10px] text-slate-400 font-normal">Leave empty for default image</span>
-          </label>
-          <input 
-            type="url" 
-            placeholder="e.g. https://images.unsplash.com/photo-..." 
-            value={coverImageUrl}
-            onChange={(e) => setCoverImageUrl(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm bg-slate-50/50"
-          />
-          {coverImageUrl && (
-            <div className="mt-3 relative aspect-video w-full rounded-xl overflow-hidden border border-slate-200 bg-slate-50 animate-in fade-in duration-200">
-              <img 
-                src={coverImageUrl} 
-                alt="Cover Preview" 
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.onerror = null; 
-                  e.target.src = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&auto=format&fit=crop&q=80';
-                }}
-              />
-            </div>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">
-            Content Body
-          </label>
-          <textarea 
-            rows={12}
-            placeholder="Write your article body here..." 
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm bg-slate-50/50 font-sans resize-y leading-relaxed"
-            required
-          />
-        </div>
-
-        <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-100">
-          <button 
-            type="button" 
-            onClick={() => navigate(`/blog/${id}`)}
-            className="px-6 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 transition"
-          >
-            Cancel
-          </button>
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 cursor-pointer"
-          >
-            {loading ? (
-              <>
-                <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                Saving Changes...
-              </>
-            ) : "Save Changes"}
-          </button>
-        </div>
-      </form>
     </div>
   );
 };
 
-export default EditBlog;
+export default EditBlog;  

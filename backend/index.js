@@ -1,4 +1,5 @@
-import dotenv from "dotenv";
+import "dotenv/config";
+
 import app from "./app.js";
 import connectToDB from "./db/index.js";
 import dns from "node:dns";
@@ -7,7 +8,6 @@ import dns from "node:dns";
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 // Load environment variables
-dotenv.config();
 const PORT = process.env.PORT || 8000;
 
 // Connect to MongoDB
