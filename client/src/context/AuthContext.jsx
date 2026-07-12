@@ -30,8 +30,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const register = async (userData) => {
-        const response = await registerService(userData);
-        setUser(response.data);
+        await registerService(userData);
     };
 
     const login = async (userData) => {

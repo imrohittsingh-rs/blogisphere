@@ -37,7 +37,15 @@ const handleUserLogin = asyncHandler(async (req, res) => {
   }
 
   const token = generateTokenForUser(user);
-  res.cookie(process.env.COOKIE_NAME, token);
+  const cookieName = process.env.COOKIE_NAME || "uid";
+  const isProduction = process.env.NODE_ENV === "production" || process.env.CORS_ORIGIN?.startsWith("https://");
+
+  res.cookie(cookieName, token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+  });
 
   return res
     .status(200)
@@ -45,7 +53,14 @@ const handleUserLogin = asyncHandler(async (req, res) => {
 })
 
 const handleUserSignOut = asyncHandler(async (req, res) => {
-  res.clearCookie(process.env.COOKIE_NAME);
+  const cookieName = process.env.COOKIE_NAME || "uid";
+  const isProduction = process.env.NODE_ENV === "production" || process.env.CORS_ORIGIN?.startsWith("https://");
+
+  res.clearCookie(cookieName, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+  });
   return res
     .status(200)
     .json(new ApiResponse(200, {}, "User logged out successfully"))

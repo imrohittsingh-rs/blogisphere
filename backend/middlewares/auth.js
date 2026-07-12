@@ -2,7 +2,8 @@ import ApiError from "../utils/apiError.js";
 import { validateToken } from "../utils/authentication.js";
 
 function checkForAuthentication(req, res, next) {
-  const token = req.cookies?.uid;
+  const cookieName = process.env.COOKIE_NAME || "uid";
+  const token = req.cookies?.[cookieName];
 
   if (!token) {
     req.user = null;
@@ -18,7 +19,8 @@ function checkForAuthentication(req, res, next) {
 }
 
 function checkUserAuthentication(req, res, next) {
-  const token = req.cookies?.uid;
+  const cookieName = process.env.COOKIE_NAME || "uid";
+  const token = req.cookies?.[cookieName];
   if (!token) {
     throw new ApiError(401, "Unauthorized")
   }
