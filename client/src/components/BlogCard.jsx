@@ -16,7 +16,7 @@ const BlogCard = ({ blog }) => {
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-50 border-b border-slate-50">
         {blog.coverImageUrl ? (
           <img
-            src={`${import.meta.env.VITE_BACKEND_URL}${blog.coverImageUrl}`}
+            src={blog.coverImageUrl}
             alt={blog.title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"

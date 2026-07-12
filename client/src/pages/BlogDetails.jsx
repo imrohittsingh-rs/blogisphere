@@ -155,7 +155,7 @@ const BlogDetails = () => {
           {blog.coverImageUrl && (
             <div className="w-full max-h-[450px] rounded-2xl overflow-hidden mb-8 shadow-sm border border-slate-100">
               <img
-                src={`${import.meta.env.VITE_BACKEND_URL}${blog.coverImageUrl}`}
+                src={blog.coverImageUrl}
                 alt={blog.title}
                 className="w-full h-full object-cover"
               />

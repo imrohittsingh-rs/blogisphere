@@ -2,19 +2,28 @@ import Blog from "../models/blog.js";
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import uploadOnCloudinary from "../utils/cloudinary.js";
 
 const handleCreateBlog = asyncHandler(async (req, res) => {
-  const { title, body, coverImageUrl } = req.body;
+  const { title, body } = req.body;
 
   if (!title || !body) {
     throw new ApiError(400, "Title and body are required")
+  }
+
+  let coverImageUrl = null;
+  if (req.file) {
+    const uploadedImage = await uploadOnCloudinary(req.file.path);
+    if (uploadedImage) {
+      coverImageUrl = uploadedImage.url
+    }
   }
 
   const blog = await Blog.create({
     title,
     body,
     createdBy: req.user.id,
-    coverImageUrl: req.file ? `/uploads/${req.file.filename}` : (coverImageUrl || null),
+    coverImageUrl,
   });
 
   const populatedBlog = await blog.populate("createdBy", "fullname email profileImageUrl");;
@@ -58,12 +67,20 @@ const handleUpdateBlog = asyncHandler(async (req, res) => {
     )
   }
 
-  const { title, body, coverImageUrl } = req.body;
+  const { title, body } = req.body;
+  let coverImageUrl = null;
+
+  if (req.file) {
+    const uploadedImage = await uploadOnCloudinary(req.file.path);
+    if (uploadedImage) {
+      coverImageUrl = uploadedImage.url
+    }
+  }
 
   const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, {
     title,
     body,
-    coverImageUrl: req.file ? `/uploads/${req.file.filename}` : (coverImageUrl || blog.coverImageUrl),
+    coverImageUrl,
   }, { new: true }).populate("createdBy", "fullname email profileImageUrl");
 
   return res

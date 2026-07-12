@@ -152,7 +152,7 @@ const EditBlog = () => {
             {coverImage && !newCoverImage && (
               <div className="mb-3 relative rounded-xl overflow-hidden border border-slate-200 h-32 w-48">
                 <img
-                  src={`${import.meta.env.VITE_BACKEND_URL}${coverImage}`}
+                  src={coverImage}
                   alt="Current cover"
                   className="w-full h-full object-cover"
                 />
