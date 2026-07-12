@@ -71,7 +71,7 @@ const CreateBlog = () => {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-slate-50">
-      <div className="w-full max-w-2xl bg-white p-8 rounded-2xl border border-slate-100 shadow-xl">
+      <div className="w-full max-w-2xl bg-white p-5 sm:p-8 rounded-2xl border border-slate-100 shadow-xl">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-black text-slate-800 tracking-tight">Add New Blog</h2>
           <p className="text-slate-500 text-sm mt-2">

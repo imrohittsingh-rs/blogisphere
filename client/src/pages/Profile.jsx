@@ -82,12 +82,12 @@ const Profile = () => {
         </div>
 
         <div>
-          <div className="mb-8 flex items-center justify-between">
+          <div className="mb-8 flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
             <h2 className="text-2xl font-black text-slate-800 tracking-tight">Your Published Stories</h2>
             {myBlogs.length > 0 && (
               <Link
                 to="/create"
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow-md hover:shadow-lg transition-all text-sm"
+                className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow-md hover:shadow-lg transition-all text-sm"
               >
                 <FiEdit3 className="w-4 h-4" />
                 <span>Write a Post</span>

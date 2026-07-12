@@ -86,7 +86,7 @@ const BlogDetails = () => {
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <button
             onClick={() => navigate("/")}
             className="flex items-center gap-2 text-slate-500 hover:text-slate-700 font-semibold text-sm transition-all cursor-pointer"
@@ -120,7 +120,7 @@ const BlogDetails = () => {
           )}
         </div>
 
-        <article className="bg-white p-6 sm:p-10 rounded-3xl border border-slate-100 shadow-xl overflow-hidden">
+        <article className="bg-white p-5 sm:p-10 rounded-3xl border border-slate-100 shadow-xl overflow-hidden">
           <header className="mb-8">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 tracking-tight leading-tight mb-6">
               {blog.title}
