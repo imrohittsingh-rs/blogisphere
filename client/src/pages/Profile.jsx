@@ -63,7 +63,7 @@ const Profile = () => {
 
 
           <div className="w-24 h-24 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-black text-4xl border-2 border-blue-200 shadow-md shrink-0">
-            {user.fullname ? user.fullname[0].toUpperCase() : 'U'}
+            {user.fullname ? user.fullname[0].toUpperCase() : "U"}
           </div>
 
           <div className="flex-grow text-center md:text-left">
