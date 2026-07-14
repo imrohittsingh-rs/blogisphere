@@ -35,6 +35,7 @@ app.use(checkForAuthentication);
 // public routes
 app.use("/api/users", userRouter);
 app.use("/api/blogs", blogRouter);
+app.use("/favicon.ico", (req, res) => res.sendStatus(204));
 
 // Global Error Handler
 app.use((err, req, res, next) => {
