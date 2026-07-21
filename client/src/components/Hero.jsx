@@ -7,7 +7,7 @@ const Hero = () => {
   const { user } = useAuth();
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-blue-50/50 via-white to-slate-50/30 py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-100">
+    <div className="relative overflow-hidden bg-linear-to-b from-blue-50/50 via-white to-slate-50/30 py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-100">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none overflow-hidden">
         <div className="absolute -top-24 left-10 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
         <div className="absolute top-20 right-10 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl" />
@@ -21,7 +21,7 @@ const Hero = () => {
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-slate-800 tracking-tight leading-tight mb-6">
           Share Your Story,{' '}
-          <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
             Inspire the World
           </span>
         </h1>
