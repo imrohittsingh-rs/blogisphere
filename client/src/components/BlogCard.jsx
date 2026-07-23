@@ -1,67 +1,66 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiClock } from 'react-icons/fi';
+import { motion } from 'motion/react';
 
-const BlogCard = ({ blog }) => {
+// Import fallback image for when coverImageUrl is not provided
+import editorialWorkspace from '../assets/images/munfarid/editorial_workspace.png';
+
+const BlogCard = ({ blog, index = 0 }) => {
   if (!blog) return null;
 
-  const readTime = Math.max(1, Math.round((blog.body || '').split(' ').length / 200));
+  // Use database cover image or fallback image
+  const coverImage = blog.coverImageUrl || editorialWorkspace;
+  
+  // Format date
+  const formattedDate = new Date(blog.createdAt).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  }).toUpperCase();
+
+  // Get categories/tags or default
+  const categories = blog.tags && blog.tags.length > 0 
+    ? blog.tags.slice(0, 2).join(', ') 
+    : (blog.category || 'Food, Travel');
 
   return (
-    <Link
-      to={`/blog/${blog._id}`}
-      className="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden"
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{
+        duration: 0.7,
+        delay: Math.min(0.3, index * 0.05),
+        ease: [0.16, 1, 0.3, 1]
+      }}
     >
-
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-50 border-b border-slate-50">
-        {blog.coverImageUrl ? (
+      <Link to={`/blog/${blog._id}`} className="flex flex-col group cursor-pointer h-full">
+        {/* Image Container */}
+        <div className="relative aspect-[16/10] overflow-hidden bg-zinc-100 mb-5 border border-zinc-100/70">
           <img
-            src={blog.coverImageUrl}
+            src={coverImage}
             alt={blog.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-104"
             loading="lazy"
           />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-blue-50/50 to-indigo-50/50 flex items-center justify-center">
-            <span className="text-lg font-black tracking-wider bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent opacity-60">
-              BlogiSphere
-            </span>
-          </div>
-        )}
-      </div>
+        </div>
 
-      <div className="p-6 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold text-slate-800 line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors leading-snug">
+        {/* Metadata */}
+        <div className="text-[10px] font-black tracking-widest text-zinc-400 uppercase mb-2">
+          {categories} — {formattedDate}
+        </div>
+
+        {/* Title */}
+        <h2 className="text-lg font-bold text-zinc-950 leading-snug mb-3 group-hover:text-brand transition-colors duration-200 line-clamp-2">
           {blog.title}
-        </h3>
+        </h2>
 
-        <p className="text-slate-500 text-sm line-clamp-3 mb-6 leading-relaxed flex-grow">
+        {/* Excerpt */}
+        <p className="text-sm text-zinc-500 leading-relaxed font-normal line-clamp-3">
           {blog.body}
         </p>
-
-        <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
-
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs border border-blue-200 shadow-sm">
-              {blog.createdBy?.fullname ? blog.createdBy.fullname[0].toUpperCase() : 'U'}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-semibold text-slate-700 leading-none mb-0.5">
-                {blog.createdBy?.fullname || 'Anonymous'}
-              </span>
-              <span className="text-[10px] text-slate-400 leading-none">
-                {new Date(blog.createdAt).toLocaleDateString()}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
-            <FiClock className="w-3.5 h-3.5" />
-            <span>{readTime} min read</span>
-          </div>
-        </div>
-      </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 };
 

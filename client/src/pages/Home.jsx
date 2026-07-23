@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { getAllBlogs } from "../services/blogService.js";
-import { FiLoader, FiSearch, FiX, FiSliders } from "react-icons/fi";
-import BlogCard from '../components/BlogCard';
-import Hero from '../components/Hero';
+import BlogCard from "../components/BlogCard.jsx";
+import ScrollExpandMedia from "../components/ScrollExpandMedia.jsx";
+import { FiLoader, FiArrowRight, FiUsers, FiCreditCard, FiHeart, FiActivity } from "react-icons/fi";
+
+// Import custom generated assets for landing page
+import spaceIntention from '../assets/images/munfarid/space_intention.png';
+import editorialWorkspace from '../assets/images/munfarid/editorial_workspace.png';
 
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("newest");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -25,124 +31,175 @@ const Home = () => {
     fetchBlogs();
   }, []);
 
-  // Filtering & Sorting
-  const query = searchTerm.toLowerCase();
+  // Filter dynamic blogs based on category selection
+  const filteredBlogs = blogs.filter((blog) => {
+    if (!selectedCategory) return true;
+    return (
+      blog.category?.toLowerCase() === selectedCategory.toLowerCase() ||
+      blog.tags?.some(tag => tag.toLowerCase() === selectedCategory.toLowerCase())
+    );
+  });
 
-  const filteredBlogs = blogs
-    .filter((blog) => {
-      return (
-        blog.title?.toLowerCase().includes(query) ||
-        blog.body?.toLowerCase().includes(query) ||
-        blog.createdBy?.fullname?.toLowerCase().includes(query)
-      );
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case "newest":
-          return new Date(b.createdAt) - new Date(a.createdAt);
-
-        case "oldest":
-          return new Date(a.createdAt) - new Date(b.createdAt);
-
-        case "title_asc":
-          return (a.title || "").localeCompare(b.title || "");
-
-        case "title_desc":
-          return (b.title || "").localeCompare(a.title || "");
-
-        default:
-          return 0;
-      }
-    });
+  // Categories metadata for Trending Topics
+  const trendingTopics = [
+    {
+      id: 'innovation',
+      name: 'Innovation',
+      icon: <div className="text-xs font-black tracking-tighter text-zinc-600 group-hover:text-brand transition-colors">///</div>
+    },
+    {
+      id: 'culture',
+      name: 'Culture',
+      icon: <FiUsers className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    },
+    {
+      id: 'finance',
+      name: 'Finance',
+      icon: <FiCreditCard className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    },
+    {
+      id: 'wellness',
+      name: 'Wellness',
+      icon: <FiHeart className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    }
+  ];
 
   return (
-    <>
-      <Hero />
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        {/* Title and Search/Sort Bar */}
-        <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">
-              Recent Articles
-            </h1>
-            <p className="text-slate-500 text-sm mt-1">
-              Explore the latest stories, insights, and ideas.
-            </p>
-          </div>
-
-          {/* Search & Sort Controls */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            {/* Search Box */}
-            <div className="relative min-w-[240px] sm:min-w-[300px]">
-              <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search by title, content, author..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-white text-slate-800 text-sm pl-10 pr-9 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-xs transition"
-              />
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
-                >
-                  <FiX className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-white text-slate-700 text-sm font-medium pl-3.5 pr-8 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-500 shadow-xs transition cursor-pointer appearance-none"
-                >
-                  <option value="newest">Newest First</option>
-                  <option value="oldest">Oldest First</option>
-                  <option value="title_asc">Title (A-Z)</option>
-                  <option value="title_desc">Title (Z-A)</option>
-                </select>
-                <FiSliders className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none" />
-              </div>
-            </div>
+    <div className="min-h-screen bg-white font-poppins text-zinc-800 antialiased selection:bg-amber-100 selection:text-amber-900">
+      
+      {/* FEATURED HERO SECTION */}
+      <ScrollExpandMedia
+        mediaType="image"
+        mediaSrc={editorialWorkspace}
+        bgImageSrc={spaceIntention}
+        title="Modern Storyteller"
+        date="2026 Narrative"
+        scrollToExpand="Scroll to Expand Feature"
+      >
+        <div className="max-w-xl mx-auto text-center flex flex-col items-center">
+          <span className="text-[10px] font-black tracking-widest text-brand uppercase mb-3 bg-brand-light px-2 py-0.5">
+            Welcome to BlogiSphere
+          </span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-zinc-950 tracking-tight leading-tight mb-4">
+            Where Every Story <br />
+            Finds Its Readers.
+          </h2>
+          <p className="text-sm text-zinc-500 leading-relaxed mb-6 font-normal max-w-[45ch] mx-auto">
+            BlogiSphere is a modern publishing platform where writers, developers, students, and creators share knowledge globally. It is where your ideas take flight and your words find their wings.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link
+              to="/create"
+              className="inline-flex items-center gap-2 bg-zinc-950 text-white hover:bg-brand border border-zinc-950 hover:border-brand transition-colors duration-200 font-bold px-6 py-3.5 text-[10px] tracking-widest uppercase btn-tactile"
+            >
+              <span>Start Writing</span>
+              <FiArrowRight className="w-3.5 h-3.5" />
+            </Link>
+            <a
+              href="#latest-stories"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('latest-stories')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-2 bg-white text-zinc-800 hover:bg-zinc-50 hover:text-brand border border-zinc-200 transition-colors duration-200 font-bold px-6 py-3.5 text-[10px] tracking-widest uppercase btn-tactile"
+            >
+              <span>Explore Stories</span>
+            </a>
           </div>
         </div>
+      </ScrollExpandMedia>
+
+      {/* TRENDING TOPICS */}
+      <section className="max-w-7xl mx-auto px-6 py-10 border-t border-zinc-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div>
+            <h3 className="text-lg font-black text-zinc-950 tracking-tight">Explore by Category</h3>
+            <p className="text-xs text-zinc-400 mt-1 font-medium">Discover stories across your favorite interests.</p>
+          </div>
+          <button
+            onClick={() => setSelectedCategory("")}
+            className="text-[10px] font-black tracking-widest text-zinc-400 hover:text-brand uppercase transition-colors self-start sm:self-auto cursor-pointer"
+          >
+            Clear Filter
+          </button>
+        </div>
+
+        {/* 4 Category Tiles */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {trendingTopics.map((topic, i) => (
+            <motion.button
+              key={topic.id}
+              onClick={() => setSelectedCategory(selectedCategory === topic.id ? "" : topic.id)}
+              className={`flex items-center gap-3.5 py-4 px-5 bg-zinc-50/50 border transition-all duration-200 cursor-pointer group ${
+                selectedCategory === topic.id 
+                  ? 'border-brand bg-brand-light/35' 
+                  : 'border-zinc-200/60 hover:border-zinc-400 hover:bg-zinc-50'
+              }`}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="flex items-center justify-center w-8 h-8 bg-white border border-zinc-200/60 shadow-xs">
+                {topic.icon}
+              </div>
+              <span className="text-xs font-bold uppercase tracking-wider text-zinc-800">
+                {topic.name}
+              </span>
+            </motion.button>
+          ))}
+        </div>
+      </section>
+
+      {/* LATEST STORIES */}
+      <section id="latest-stories" className="max-w-7xl mx-auto px-6 py-12 border-t border-zinc-100">
+        <h3 className="text-lg font-black text-zinc-950 tracking-tight mb-8">Latest Stories</h3>
 
         {loading ? (
           <div className="min-h-[30vh] flex flex-col items-center justify-center gap-3">
-            <FiLoader className="animate-spin h-8 w-8 text-blue-600" />
-            <p className="text-slate-500 font-medium text-sm">Loading articles...</p>
+            <FiLoader className="animate-spin h-8 w-8 text-brand" />
+            <p className="text-zinc-400 font-bold text-xs uppercase tracking-wider">Loading stories...</p>
           </div>
         ) : error ? (
-          <div className="min-h-[30vh] flex flex-col items-center justify-center text-red-500 font-medium">
+          <div className="min-h-[30vh] flex flex-col items-center justify-center text-red-500 font-bold text-sm uppercase tracking-wider">
             {error}
           </div>
-        ) : blogs.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm">
-            <p className="text-slate-400 font-medium">No blog posts found. Be the first to write one!</p>
-          </div>
         ) : filteredBlogs.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-3xl border border-slate-100 shadow-sm space-y-3">
-            <p className="text-slate-600 font-semibold">No articles found matching "{searchTerm}"</p>
-            <button
-              onClick={() => setSearchTerm("")}
-              className="text-xs text-blue-600 hover:underline font-semibold"
-            >
-              Clear search filter
-            </button>
+          <div className="text-center py-20 bg-zinc-50/50 border border-zinc-100/70">
+            <p className="text-zinc-500 font-medium text-sm">No stories found. Be the first to write one!</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredBlogs.map((blog) => (
-              <BlogCard key={blog._id} blog={blog} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+            {filteredBlogs.map((blog, index) => (
+              <BlogCard key={blog._id} blog={blog} index={index} />
             ))}
           </div>
         )}
-      </div>
-    </>
+
+        {/* PAGINATION */}
+        <div className="mt-16 flex items-center justify-center gap-2">
+          {[1, 2, 3].map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`w-9 h-9 flex items-center justify-center text-xs font-bold transition-all duration-200 cursor-pointer ${
+                currentPage === page
+                  ? 'bg-brand text-white'
+                  : 'bg-white text-zinc-500 border border-zinc-200 hover:border-zinc-400 hover:text-zinc-800'
+              }`}
+            >
+              {page} 
+            </button>
+          ))}
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(3, prev + 1))}
+            className="w-9 h-9 flex items-center justify-center text-xs font-bold bg-white text-zinc-500 border border-zinc-200 hover:border-zinc-400 hover:text-zinc-800 transition-all duration-200 cursor-pointer"
+            title="Next Page"
+          >
+            &rsaquo;
+          </button>
+        </div>
+      </section>
+
+    </div>
   );
 };
 

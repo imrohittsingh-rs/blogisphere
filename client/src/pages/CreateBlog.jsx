@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { createBlog } from "../services/blogService.js";
 import { MdOutlineErrorOutline } from "react-icons/md";
@@ -70,65 +71,70 @@ const CreateBlog = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-slate-50">
-      <div className="w-full max-w-2xl bg-white p-5 sm:p-8 rounded-2xl border border-slate-100 shadow-xl">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-black text-slate-800 tracking-tight">Add New Blog</h2>
-          <p className="text-slate-500 text-sm mt-2">
-            Share your stories, ideas, and knowledge with the world.
+    <div className="min-h-[85vh] flex items-center justify-center px-6 py-16 bg-white selection:bg-amber-100 selection:text-amber-900">
+      <motion.div 
+        className="w-full max-w-2xl bg-zinc-50/50 p-8 md:p-12 border border-zinc-200/60 shadow-xs"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <div className="text-center mb-10">
+          <h2 className="text-2xl font-black text-zinc-950 tracking-tight">Create New Publication</h2>
+          <p className="text-zinc-500 text-xs mt-2 font-medium">
+            Publish your stories, ideas, and knowledge with a worldwide audience.
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm flex items-center gap-3">
-            <MdOutlineErrorOutline size={18} />
+          <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-650 text-xs font-bold uppercase tracking-wider flex items-center gap-3">
+            <MdOutlineErrorOutline size={16} />
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">
-              Title
+            <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-700 mb-2">
+              Publication Title
             </label>
             <input
               type="text"
               name="title"
-              placeholder="Enter a catchy title..."
+              placeholder="e.g. The Philosophy of 'Less but Better' in Design"
               value={formData.title}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm bg-slate-50/50"
+              className="w-full px-4 py-3 bg-white text-zinc-800 placeholder-zinc-400 border border-zinc-200 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand transition-all text-sm rounded-none font-medium"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">
-              Body
+            <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-700 mb-2">
+              Story Body Content
             </label>
             <textarea
               name="body"
-              placeholder="Write your story here..."
+              placeholder="Start drafting your article details here..."
               value={formData.body}
               onChange={handleChange}
               rows="8"
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm bg-slate-50/50 resize-y"
+              className="w-full px-4 py-3 bg-white text-zinc-800 placeholder-zinc-400 border border-zinc-200 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand transition-all text-sm rounded-none resize-y font-normal leading-relaxed"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">
-              Cover Image
+            <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-700 mb-2">
+              Cover Image upload (Optional)
             </label>
             <input
               type="file"
               accept="image/*"
               onChange={handleImageChange}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm bg-slate-50/50 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              className="w-full px-4 py-3 bg-white text-zinc-500 border border-zinc-200 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand transition-all text-xs rounded-none file:mr-4 file:py-1 file:px-3 file:rounded-none file:border file:border-zinc-200 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-zinc-100 file:text-zinc-700 hover:file:bg-zinc-200 hover:file:text-zinc-900 cursor-pointer"
             />
             {coverImage && (
-              <p className="text-xs text-emerald-600 font-medium mt-2 ml-1">
+              <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider mt-2">
                 Selected: {coverImage.name}
               </p>
             )}
@@ -138,25 +144,25 @@ const CreateBlog = () => {
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="w-1/2 border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold py-3 px-4 rounded-xl transition-all duration-200 text-center text-sm cursor-pointer"
+              className="w-1/2 border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-500 font-bold py-3.5 px-4 transition-colors text-[10px] tracking-widest uppercase rounded-none cursor-pointer btn-tactile"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 cursor-pointer"
+              className="w-1/2 bg-zinc-950 text-white hover:bg-brand hover:border-brand transition-all duration-200 font-bold py-3.5 px-4 text-[10px] tracking-widest uppercase border border-zinc-950 rounded-none disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer btn-tactile"
             >
               {loading ? (
                 <>
-                  <FiLoader className="animate-spin h-5 w-5 text-white" />
+                  <FiLoader className="animate-spin h-3.5 w-3.5 text-current" />
                   Creating...
                 </>
               ) : "Create Blog"}
             </button>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };

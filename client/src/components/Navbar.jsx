@@ -1,18 +1,21 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext.jsx";
-import { FiEdit3, FiLogOut } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'motion/react';
+import { FiLogOut, FiSearch, FiMenu, FiX } from 'react-icons/fi';
 import toast from 'react-hot-toast';
-import logo from "../assets/images/logo.png";
 
 const Navbar = () => {
   const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
       await logout();
       toast.success("Logged out successfully!");
+      setIsMenuOpen(false);
       navigate("/login");
     } catch (error) {
       toast.error("Failed to log out");
@@ -20,79 +23,155 @@ const Navbar = () => {
     }
   };
 
+  const isActive = (path) => location.pathname === path;
+
   return (
-    <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <nav className="border-b border-zinc-100 bg-white/80 backdrop-blur-md sticky top-0 z-50 transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
+        
+        {/* BlogiSphere Logo/Text */}
+        <Link to="/" className="text-xl font-black tracking-tighter text-zinc-950 hover:opacity-85 transition-opacity flex items-center gap-1.5">
+          <span>BlogiSphere</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-brand" />
+        </Link>
 
-          <div className="flex items-center gap-6">
-            <Link to="/" className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-1.5 sm:gap-2">
-              <img src={logo} alt="BlogiSphere Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-cover" />
-              <span className="text-gray-800 font-bold">
-                BlogiSphere
-              </span>
-            </Link>
-            <div className="hidden sm:flex items-center border-l border-slate-200 pl-4 h-6">
-              <Link to="/" className="text-lg font-semibold text-slate-600 hover:text-blue-600 transition-colors">
-                Home
-              </Link>
-            </div>
+        {/* Navigation Links (Desktop) */}
+        <div className="hidden md:flex items-center gap-8">
+          <Link 
+            to="/" 
+            className={`text-xs font-bold uppercase tracking-wider transition-colors duration-200 ${
+              isActive("/") ? "text-brand" : "text-zinc-500 hover:text-zinc-800"
+            }`}
+          >
+            Home
+          </Link>
+          <Link 
+            to="/profile" 
+            className={`text-xs font-bold uppercase tracking-wider transition-colors duration-200 ${
+              isActive("/profile") ? "text-brand" : "text-zinc-500 hover:text-zinc-800"
+            }`}
+          >
+            My Profile
+          </Link>
+          <Link 
+            to="/create" 
+            className={`text-xs font-bold uppercase tracking-wider transition-colors duration-200 ${
+              isActive("/create") ? "text-brand" : "text-zinc-500 hover:text-zinc-800"
+            }`}
+          >
+            Write Post
+          </Link>
+        </div>
+
+        {/* Right side: Search bar & Profile Button & Hamburg menu */}
+        <div className="flex items-center gap-4 sm:gap-6">
+          
+          {/* Search Bar */}
+          <div className="relative max-w-xs hidden sm:block">
+            <input
+              type="text"
+              placeholder="Search stories..."
+              className="bg-zinc-50 text-xs text-zinc-800 placeholder-zinc-400 pl-3 pr-8 py-2 border border-zinc-200 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand transition-all w-36 focus:w-44 rounded-none font-medium"
+            />
+            <FiSearch className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 w-3.5 h-3.5 pointer-events-none" />
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-4">
-            {!loading && (
-              user ? (
-                <>
-                  <Link
-                    to="/create"
-                    className="flex items-center gap-2 bg-blue-50 text-blue-600 hover:bg-blue-100 font-semibold py-2 px-2.5 sm:px-4 rounded-xl transition-all duration-200 text-sm"
-                    title="Write an Article"
-                  >
-                    <FiEdit3 className="w-4 h-4" />
-                    <span className="hidden sm:inline">Write</span>
-                  </Link>
+          {/* Profile / Auth Controls */}
+          {!loading && (
+            user ? (
+              <div className="flex items-center gap-4">
+                {/* User Profile Button */}
+                <Link
+                  to="/profile"
+                  className="flex items-center gap-2 hover:opacity-85 transition-opacity text-sm font-semibold text-zinc-700"
+                  title="My Profile"
+                >
+                  <div className="w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center font-bold text-xs border border-brand/20 shadow-sm transition-transform hover:scale-105">
+                    {user.fullname ? user.fullname[0].toUpperCase() : 'U'}
+                  </div>
+                  <span className="hidden lg:inline text-zinc-900 font-bold text-xs uppercase tracking-wider">{user.fullname}</span>
+                </Link>
 
-                  <Link
-                    to="/profile"
-                    className="flex items-center gap-2 pl-1 sm:pl-2 border-l border-slate-100 hover:opacity-80 transition-opacity"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm border border-blue-200">
-                      {user.fullname ? user.fullname[0].toUpperCase() : 'U'}
-                    </div>
-                    <span className="hidden md:inline text-sm font-medium text-slate-700">
-                      {user.fullname}
-                    </span>
-                  </Link>
+                {/* Log Out */}
+                <button
+                  onClick={handleLogout}
+                  className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-red-600 transition-colors cursor-pointer"
+                  title="Log out"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-4">
+                <Link
+                  to="/login"
+                  className="text-zinc-600 hover:text-zinc-950 font-bold text-xs uppercase tracking-wider transition-colors py-2"
+                >
+                  Log In
+                </Link>
+                <Link
+                  to="/signup"
+                  className="bg-zinc-950 text-white hover:bg-brand hover:text-white transition-all duration-200 font-bold py-2 px-4 text-[10px] tracking-widest uppercase border border-zinc-950 hover:border-brand rounded-none btn-tactile"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )
+          )}
 
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center gap-2 text-slate-500 hover:text-slate-700 font-semibold py-2 px-2 sm:px-3 rounded-xl transition-all duration-200 text-sm cursor-pointer"
-                    title="Log out"
-                  >
-                    <FiLogOut className="w-4 h-4" />
-                    <span className="hidden sm:inline">Log out</span>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="text-slate-600 hover:text-slate-800 font-semibold text-sm transition-all py-2 px-4"
-                  >
-                    Log In
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 text-center text-sm"
-                  >
-                    Sign Up
-                  </Link>
-                </>
-              )
-            )}
-          </div>
+          {/* Mobile Hamburger Toggle Button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden flex items-center justify-center p-1.5 border border-zinc-200 bg-white text-zinc-700 hover:text-brand hover:border-brand transition-colors cursor-pointer btn-tactile"
+            aria-label="Toggle Menu"
+          >
+            {isMenuOpen ? <FiX className="w-5 h-5" /> : <FiMenu className="w-5 h-5" />}
+          </button>
+
         </div>
       </div>
+
+      {/* Mobile Navigation Dropdown Menu */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="md:hidden border-t border-zinc-100 bg-white/95 backdrop-blur-md px-6 py-5 flex flex-col gap-4 shadow-sm overflow-hidden"
+          >
+            <Link 
+              to="/" 
+              onClick={() => setIsMenuOpen(false)}
+              className={`text-xs font-bold uppercase tracking-wider transition-colors duration-200 py-1.5 border-b border-zinc-100/50 ${
+                isActive("/") ? "text-brand" : "text-zinc-500 hover:text-zinc-800"
+              }`}
+            >
+              Home
+            </Link>
+            <Link 
+              to="/profile" 
+              onClick={() => setIsMenuOpen(false)}
+              className={`text-xs font-bold uppercase tracking-wider transition-colors duration-200 py-1.5 border-b border-zinc-100/50 ${
+                isActive("/profile") ? "text-brand" : "text-zinc-500 hover:text-zinc-800"
+              }`}
+            >
+              My Profile
+            </Link>
+            <Link 
+              to="/create" 
+              onClick={() => setIsMenuOpen(false)}
+              className={`text-xs font-bold uppercase tracking-wider transition-colors duration-200 py-1.5 ${
+                isActive("/create") ? "text-brand" : "text-zinc-500 hover:text-zinc-800"
+              }`}
+            >
+              Write Post
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </nav>
   );
 };
