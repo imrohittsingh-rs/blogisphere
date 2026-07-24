@@ -120,8 +120,8 @@ const ScrollExpandMedia = ({
   const mediaHeight = 400 + scrollProgress * (isMobile ? 200 : 400);
   const textTranslateX = scrollProgress * (isMobile ? 180 : 150);
 
-  const firstWord = title ? title.split(' ')[0] : '';
-  const restOfTitle = title ? title.split(' ').slice(1).join(' ') : '';
+  const firstWord = title ? title.split(",")[0] : '';
+  const restOfTitle = title ? title.split(",").slice(1).join(", ") : '';
 
   return (
     <div
@@ -176,7 +176,6 @@ const ScrollExpandMedia = ({
                               (mediaSrc.split('v=')[1] || '')
                         }
                         className='w-full h-full'
-                        frameBorder='0'
                         allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
                         allowFullScreen
                       />
@@ -229,7 +228,7 @@ const ScrollExpandMedia = ({
                 <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-center z-10 w-full px-4'>
                   {date && (
                     <p
-                      className='text-lg font-black uppercase tracking-wider text-zinc-100 mb-1 drop-shadow-md'
+                      className='text-md font-black uppercase tracking-wider text-zinc-100 mb-1 drop-shadow-md'
                       style={{ transform: `translateX(-${textTranslateX}vw)` }}
                     >
                       {date}
@@ -237,7 +236,7 @@ const ScrollExpandMedia = ({
                   )}
                   {scrollToExpand && (
                     <p
-                      className='text-[10px] font-black uppercase tracking-widest text-brand-light drop-shadow-md animate-pulse'
+                      className='text-[10px] font-semibold uppercase tracking-widest text-brand-light drop-shadow-md animate-pulse'
                       style={{ transform: `translateX(${textTranslateX}vw)` }}
                     >
                       {scrollToExpand}

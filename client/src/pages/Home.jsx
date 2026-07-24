@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import { getAllBlogs } from "../services/blogService.js";
 import BlogCard from "../components/BlogCard.jsx";
 import ScrollExpandMedia from "../components/ScrollExpandMedia.jsx";
-import { FiLoader, FiArrowRight, FiUsers, FiCreditCard, FiHeart, FiActivity } from "react-icons/fi";
+import { FiLoader, FiArrowRight, FiCode, FiCpu, FiPenTool, FiZap, FiCheckSquare, FiEdit3, FiGlobe, FiMonitor } from "react-icons/fi";
 
 // Import custom generated assets for landing page
 import spaceIntention from '../assets/images/munfarid/space_intention.png';
@@ -43,24 +43,44 @@ const Home = () => {
   // Categories metadata for Trending Topics
   const trendingTopics = [
     {
-      id: 'innovation',
-      name: 'Innovation',
-      icon: <div className="text-xs font-black tracking-tighter text-zinc-600 group-hover:text-brand transition-colors">///</div>
+      id: 'development',
+      name: 'Development',
+      icon: <FiCode className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
     },
     {
-      id: 'culture',
-      name: 'Culture',
-      icon: <FiUsers className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+      id: 'ai',
+      name: 'AI',
+      icon: <FiCpu className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
     },
     {
-      id: 'finance',
-      name: 'Finance',
-      icon: <FiCreditCard className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+      id: 'design',
+      name: 'Design',
+      icon: <FiPenTool className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
     },
     {
-      id: 'wellness',
-      name: 'Wellness',
-      icon: <FiHeart className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+      id: 'startups',
+      name: 'Startups',
+      icon: <FiZap className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    },
+    {
+      id: 'productivity',
+      name: 'Productivity',
+      icon: <FiCheckSquare className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    },
+    {
+      id: 'writing',
+      name: 'Writing',
+      icon: <FiEdit3 className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    },
+    {
+      id: 'technology',
+      name: 'Technology',
+      icon: <FiGlobe className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    },
+    {
+      id: 'web-development',
+      name: 'Web Development',
+      icon: <FiMonitor className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
     }
   ];
 
@@ -72,9 +92,9 @@ const Home = () => {
         mediaType="image"
         mediaSrc={editorialWorkspace}
         bgImageSrc={spaceIntention}
-        title="Modern Storyteller"
-        date="2026 Narrative"
-        scrollToExpand="Scroll to Expand Feature"
+        title="Every Great Story,Starts Here."
+        date="Ready to share your first story?"
+        scrollToExpand="Scroll to Explore"
       >
         <div className="max-w-xl mx-auto text-center flex flex-col items-center">
           <span className="text-[10px] font-black tracking-widest text-brand uppercase mb-3 bg-brand-light px-2 py-0.5">
@@ -124,7 +144,7 @@ const Home = () => {
           </button>
         </div>
 
-        {/* 4 Category Tiles */}
+        {/* Category Tiles */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {trendingTopics.map((topic, i) => (
             <motion.button

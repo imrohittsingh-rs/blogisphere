@@ -7,6 +7,45 @@ import { MdOutlineErrorOutline } from "react-icons/md";
 import { getBlogById, updateBlog } from "../services/blogService";
 import toast from 'react-hot-toast';
 
+const CATEGORIES = [
+  "Technology",
+  "Programming",
+  "AI & Machine Learning",
+  "Web Development",
+  "Mobile Development",
+  "Cybersecurity",
+  "Cloud Computing",
+  "Data Science",
+
+  "Design",
+  "UI/UX",
+
+  "Startups",
+  "Business",
+  "Finance",
+
+  "Productivity",
+  "Career",
+
+  "Writing",
+  "Education",
+
+  "Lifestyle",
+  "Health & Fitness",
+  "Travel",
+  "Food",
+
+  "Entertainment",
+  "Books",
+  "Gaming",
+
+  "Science",
+  "Environment",
+
+  "Personal",
+  "Other"
+];
+
 const EditBlog = () => {
   const { id } = useParams();
   const { user, loading: authLoading } = useAuth();
@@ -15,6 +54,7 @@ const EditBlog = () => {
   const [formData, setFormData] = useState({
     title: "",
     body: "",
+    category: "",
   });
   const [coverImage, setCoverImage] = useState(null);
   const [newCoverImage, setNewCoverImage] = useState(null);
@@ -36,7 +76,9 @@ const EditBlog = () => {
         setFormData({
           title: res.data.title,
           body: res.data.body,
+          category: res.data.category || "",
         });
+        setTags(res.data.tags);
         setCoverImage(res.data.coverImageUrl);
       } catch (error) {
         setError(error.response?.data?.message || "Failed to load blog");
@@ -62,7 +104,7 @@ const EditBlog = () => {
     e.preventDefault();
     setError("");
 
-    if (!formData.title || !formData.body) {
+    if (!formData.title || !formData.body || !formData.category) {
       setError("Please fill in all fields");
       return;
     }
@@ -73,6 +115,8 @@ const EditBlog = () => {
       const data = new FormData();
       data.append("title", formData.title);
       data.append("body", formData.body);
+      data.append("category", formData.category);
+      data.append("tags", JSON.stringify(tags));
       if (newCoverImage) {
         data.append("coverImage", newCoverImage);
       }
@@ -123,7 +167,7 @@ const EditBlog = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-700 mb-2">
-              Publication Title
+              Publication Title <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -138,7 +182,27 @@ const EditBlog = () => {
 
           <div>
             <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-700 mb-2">
-              Story Body Content
+              Category <span className="text-red-500">*</span>
+            </label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-white text-zinc-800 border border-zinc-200 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand transition-all text-sm rounded-none font-medium cursor-pointer"
+              required
+            >
+              <option value="" disabled>Select Category</option>
+              {CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-700 mb-2">
+              Story Body Content <span className="text-red-500">*</span>
             </label>
             <textarea
               name="body"
@@ -149,6 +213,40 @@ const EditBlog = () => {
               className="w-full px-4 py-3 bg-white text-zinc-800 placeholder-zinc-400 border border-zinc-200 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand transition-all text-sm rounded-none resize-y font-normal leading-relaxed"
               required
             />
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-700 mb-2">
+              Tags
+            </label>
+            <input
+              type="text"
+              name="tagInput"
+              placeholder="Type a tag and press Enter"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="w-full px-4 py-3 bg-white text-zinc-800 placeholder-zinc-400 border border-zinc-200 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand transition-all text-sm rounded-none font-medium mb-3"
+            />
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-6">
+                {tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center gap-1 bg-zinc-100 text-zinc-800 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider border border-zinc-200"
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => removeTag(tag)}
+                      className="text-zinc-400 hover:text-red-650 cursor-pointer font-bold text-xs"
+                    >
+                      &times;
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>

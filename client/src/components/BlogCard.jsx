@@ -21,7 +21,7 @@ const BlogCard = ({ blog, index = 0 }) => {
   // Get categories/tags or default
   const categories = blog.tags && blog.tags.length > 0 
     ? blog.tags.slice(0, 2).join(', ') 
-    : (blog.category || 'Food, Travel');
+    : (blog.category || 'Technology');
 
   return (
     <motion.div

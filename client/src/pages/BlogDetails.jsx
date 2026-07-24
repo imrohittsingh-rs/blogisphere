@@ -213,7 +213,7 @@ const BlogDetails = () => {
           <header className="mb-10">
             {/* Tag/Category */}
             <div className="text-[10px] font-black tracking-widest text-brand uppercase mb-4">
-              {blog.tags && blog.tags.length > 0 ? blog.tags.join(', ') : (blog.category || 'Lifestyle')}
+              {blog.tags && blog.tags.length > 0 ? blog.tags.join(', ') : (blog.category || 'Technology')}
             </div>
 
             {/* Title */}

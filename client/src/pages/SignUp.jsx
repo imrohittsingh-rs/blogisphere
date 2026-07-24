@@ -64,7 +64,7 @@ const SignUp = () => {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="text-center mb-8">
-          <h2 className="text-xl font-black text-zinc-950 tracking-tight">Create Account</h2>
+          <h2 className="text-xl font-black text-zinc-950 tracking-tight">Create Your Account</h2>
           <p className="text-zinc-500 text-xs mt-2 font-medium">
             Join BlogiSphere and start publishing your articles today.
           </p>

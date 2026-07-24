@@ -5,10 +5,10 @@ import asyncHandler from "../utils/asyncHandler.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 
 const handleCreateBlog = asyncHandler(async (req, res) => {
-  const { title, body } = req.body;
+  const { title, body, category, tags } = req.body;
 
-  if (!title || !body) {
-    throw new ApiError(400, "Title and body are required")
+  if (!title || !body || !category) {
+    throw new ApiError(400, "Title, body, and category are required")
   }
 
   let coverImageUrl = null;
@@ -19,9 +19,27 @@ const handleCreateBlog = asyncHandler(async (req, res) => {
     }
   }
 
+  let parsedTags = [];
+  if (tags) {
+    try {
+      parsedTags = JSON.parse(tags);
+      if (!Array.isArray(parsedTags)) {
+        parsedTags = [parsedTags];
+      }
+    } catch (e) {
+      if (typeof tags === 'string') {
+        parsedTags = tags.split(',').map(t => t.trim()).filter(Boolean);
+      } else if (Array.isArray(tags)) {
+        parsedTags = tags;
+      }
+    }
+  }
+
   const blog = await Blog.create({
     title,
     body,
+    category,
+    tags: parsedTags,
     createdBy: req.user.id,
     coverImageUrl,
   });
@@ -67,7 +85,12 @@ const handleUpdateBlog = asyncHandler(async (req, res) => {
     )
   }
 
-  const { title, body } = req.body;
+  const { title, body, category, tags } = req.body;
+
+  if (!title || !body || !category) {
+    throw new ApiError(400, "Title, body, and category are required")
+  }
+
   let coverImageUrl = null;
 
   if (req.file) {
@@ -77,11 +100,34 @@ const handleUpdateBlog = asyncHandler(async (req, res) => {
     }
   }
 
-  const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, {
+  let parsedTags = [];
+  if (tags) {
+    try {
+      parsedTags = JSON.parse(tags);
+      if (!Array.isArray(parsedTags)) {
+        parsedTags = [parsedTags];
+      }
+    } catch (e) {
+      if (typeof tags === 'string') {
+        parsedTags = tags.split(',').map(t => t.trim()).filter(Boolean);
+      } else if (Array.isArray(tags)) {
+        parsedTags = tags;
+      }
+    }
+  }
+
+  const updateFields = {
     title,
     body,
-    coverImageUrl,
-  }, { new: true }).populate("createdBy", "fullname email profileImageUrl");
+    category,
+    tags: parsedTags,
+  };
+
+  if (coverImageUrl) {
+    updateFields.coverImageUrl = coverImageUrl;
+  }
+
+  const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, updateFields, { new: true }).populate("createdBy", "fullname email profileImageUrl");
 
   return res
     .status(200)
