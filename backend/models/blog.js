@@ -17,6 +17,7 @@ const blogSchema = new Schema(
     category: {
       type: String,
       required: true,
+      default: "others",
     },
     tags: {
       type: [String],

@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import { getAllBlogs } from "../services/blogService.js";
 import BlogCard from "../components/BlogCard.jsx";
 import ScrollExpandMedia from "../components/ScrollExpandMedia.jsx";
-import { FiLoader, FiArrowRight, FiCode, FiCpu, FiPenTool, FiZap, FiCheckSquare, FiEdit3, FiGlobe, FiMonitor } from "react-icons/fi";
+import { FiLoader, FiArrowRight, FiCode, FiCpu, FiPenTool, FiZap, FiCheckSquare, FiEdit3, FiGlobe, FiMonitor, FiSearch } from "react-icons/fi";
 
 // Import custom generated assets for landing page
 import spaceIntention from '../assets/images/munfarid/space_intention.png';
@@ -16,6 +16,7 @@ const Home = () => {
   const [error, setError] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -31,13 +32,19 @@ const Home = () => {
     fetchBlogs();
   }, []);
 
-  // Filter dynamic blogs based on category selection
+  // Filter dynamic blogs based on category and search query selection
   const filteredBlogs = blogs.filter((blog) => {
-    if (!selectedCategory) return true;
-    return (
+    const matchesCategory = !selectedCategory || 
       blog.category?.toLowerCase() === selectedCategory.toLowerCase() ||
-      blog.tags?.some(tag => tag.toLowerCase() === selectedCategory.toLowerCase())
-    );
+      blog.tags?.some(tag => tag.toLowerCase() === selectedCategory.toLowerCase());
+
+    const matchesSearch = !searchQuery || 
+      blog.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      blog.body?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      blog.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      blog.category?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesCategory && matchesSearch;
   });
 
   // Categories metadata for Trending Topics
@@ -138,7 +145,7 @@ const Home = () => {
           </div>
           <button
             onClick={() => setSelectedCategory("")}
-            className="text-[10px] font-black tracking-widest text-zinc-400 hover:text-brand uppercase transition-colors self-start sm:self-auto cursor-pointer"
+            className="text-[10px] font-black tracking-widest text-zinc-400 hover:text-brand uppercase transition-colors self-start sm:self-auto cursor-pointer border border-zinc-200/65 py-1 px-3"
           >
             Clear Filter
           </button>
@@ -171,7 +178,21 @@ const Home = () => {
 
       {/* LATEST STORIES */}
       <section id="latest-stories" className="max-w-7xl mx-auto px-6 py-12 border-t border-zinc-100">
-        <h3 className="text-lg font-black text-zinc-950 tracking-tight mb-8">Latest Stories</h3>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <h3 className="text-lg font-black text-zinc-950 tracking-tight">Latest Stories</h3>
+          
+          {/* Search Bar */}
+          <div className="relative w-full sm:max-w-xs">
+            <input
+              type="text"
+              placeholder="Search stories..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-zinc-50 text-xs text-zinc-800 placeholder-zinc-400 pl-3 pr-8 py-2.5 border border-zinc-200 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand transition-all rounded-none font-medium"
+            />
+            <FiSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 w-3.5 h-3.5 pointer-events-none" />
+          </div>
+        </div>
 
         {loading ? (
           <div className="min-h-[30vh] flex flex-col items-center justify-center gap-3">

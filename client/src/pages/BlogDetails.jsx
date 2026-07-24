@@ -211,13 +211,23 @@ const BlogDetails = () => {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
           <header className="mb-10">
-            {/* Tag/Category */}
-            <div className="text-[10px] font-black tracking-widest text-brand uppercase mb-4">
-              {blog.tags && blog.tags.length > 0 ? blog.tags.join(', ') : (blog.category || 'Technology')}
+            {/* Tag/Category Badges */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              <span className="inline-flex items-center bg-brand-light text-brand px-3 py-1 text-[10px] font-semibold capitalize tracking-widest border border-brand/10 rounded-4xl">
+                {blog.category}
+              </span>
+              {blog.tags && blog.tags.map((tag) => (
+                <span 
+                  key={tag}
+                  className="inline-flex items-center bg-zinc-100 text-zinc-650 px-3 py-1 text-[10px] font-semibold capitalize tracking-widest border border-zinc-200/65 rounded-4xl"
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
 
             {/* Title */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-zinc-950 tracking-tight leading-tight mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-zinc-950 tracking-tight leading-tight mb-8">
               {blog.title}
             </h1>
 
@@ -228,7 +238,7 @@ const BlogDetails = () => {
                   {blog.createdBy?.fullname ? blog.createdBy.fullname[0].toUpperCase() : 'U'}
                 </div>
                 <div>
-                  <h4 className="text-sm font-black text-zinc-950 leading-none mb-1">
+                  <h4 className="text-sm font-bold text-zinc-950 leading-none mb-1">
                     {blog.createdBy?.fullname || 'Anonymous'}
                   </h4>
                   <p className="text-xs text-zinc-500 font-medium leading-none">{blog.createdBy?.email}</p>

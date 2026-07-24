@@ -65,16 +65,6 @@ const Navbar = () => {
 
         {/* Right side: Search bar & Profile Button & Hamburg menu */}
         <div className="flex items-center gap-4 sm:gap-6">
-          
-          {/* Search Bar */}
-          <div className="relative max-w-xs hidden sm:block">
-            <input
-              type="text"
-              placeholder="Search stories..."
-              className="bg-zinc-50 text-xs text-zinc-800 placeholder-zinc-400 pl-3 pr-8 py-2 border border-zinc-200 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand transition-all w-36 focus:w-44 rounded-none font-medium"
-            />
-            <FiSearch className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 w-3.5 h-3.5 pointer-events-none" />
-          </div>
 
           {/* Profile / Auth Controls */}
           {!loading && (

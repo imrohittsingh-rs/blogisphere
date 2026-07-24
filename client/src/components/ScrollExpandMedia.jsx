@@ -212,7 +212,7 @@ const ScrollExpandMedia = ({
                   <div className='relative w-full h-full'>
                     <img
                       src={mediaSrc}
-                      alt={title || 'Media content'}
+                      alt={title}
                       className='w-full h-full object-cover'
                     />
                     <motion.div
@@ -228,7 +228,7 @@ const ScrollExpandMedia = ({
                 <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-center z-10 w-full px-4'>
                   {date && (
                     <p
-                      className='text-md font-black uppercase tracking-wider text-zinc-100 mb-1 drop-shadow-md'
+                      className='text-sm md:text-md md:font-bold font-semibold uppercase tracking-wider text-zinc-100 mb-1 drop-shadow-md'
                       style={{ transform: `translateX(-${textTranslateX}vw)` }}
                     >
                       {date}
@@ -252,13 +252,13 @@ const ScrollExpandMedia = ({
                 }`}
               >
                 <motion.h2
-                  className='text-5xl md:text-7xl lg:text-8xl font-black text-brand-light uppercase tracking-tighter transition-none'
+                  className='text-3xl md:text-4xl lg:text-5xl font-black text-brand-light uppercase tracking-tighter transition-none'
                   style={{ transform: `translateX(-${textTranslateX}vw)` }}
                 >
                   {firstWord}
                 </motion.h2>
                 <motion.h2
-                  className='text-5xl md:text-7xl lg:text-8xl font-black text-center text-brand-light uppercase tracking-tighter transition-none'
+                  className='text-3xl md:text-4xl lg:text-5xl font-black text-center text-brand-light uppercase tracking-tighter transition-none'
                   style={{ transform: `translateX(${textTranslateX}vw)` }}
                 >
                   {restOfTitle}

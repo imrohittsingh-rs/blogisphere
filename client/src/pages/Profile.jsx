@@ -73,10 +73,10 @@ const Profile = () => {
             <h1 className="text-2xl font-black text-zinc-950 tracking-tight mb-1">
               {user.fullname}
             </h1>
-            <p className="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-4">{user.email}</p>
+            <p className="text-zinc-500 text-xs font-semibold lowercase tracking-wider mb-4">{user.email}</p>
 
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest bg-brand-light/45 text-amber-900 border border-brand/10">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black capitalize tracking-widest bg-brand-light/45 text-amber-900 border border-brand/10">
                 <FiBookOpen className="w-3.5 h-3.5 text-brand" />
                 {myBlogs.length} {myBlogs.length === 1 ? 'Article' : 'Articles'} Published
               </span>
