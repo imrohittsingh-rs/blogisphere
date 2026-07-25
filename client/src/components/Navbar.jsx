@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext.jsx";
 import { motion, AnimatePresence } from 'motion/react';
-import { FiLogOut, FiSearch, FiMenu, FiX } from 'react-icons/fi';
+import { FiMenu, FiX } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
 const Navbar = () => {
@@ -29,13 +29,11 @@ const Navbar = () => {
     <nav className="border-b border-zinc-100 bg-white/80 backdrop-blur-md sticky top-0 z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
         
-        {/* BlogiSphere Logo/Text */}
         <Link to="/" className="text-xl font-black tracking-tighter text-zinc-950 hover:opacity-85 transition-opacity flex items-center gap-1.5">
           <span>BlogiSphere</span>
           <span className="w-1.5 h-1.5 rounded-full bg-brand" />
         </Link>
 
-        {/* Navigation Links (Desktop) */}
         <div className="hidden md:flex items-center gap-8">
           <Link 
             to="/" 
@@ -59,18 +57,15 @@ const Navbar = () => {
               isActive("/create") ? "text-brand" : "text-zinc-500 hover:text-zinc-800"
             }`}
           >
-            Write Post
+            Write Story
           </Link>
         </div>
 
-        {/* Right side: Search bar & Profile Button & Hamburg menu */}
         <div className="flex items-center gap-4 sm:gap-6">
 
-          {/* Profile / Auth Controls */}
           {!loading && (
             user ? (
               <div className="flex items-center gap-4">
-                {/* User Profile Button */}
                 <Link
                   to="/profile"
                   className="flex items-center gap-2 hover:opacity-85 transition-opacity text-sm font-semibold text-zinc-700"
@@ -82,7 +77,6 @@ const Navbar = () => {
                   <span className="hidden lg:inline text-zinc-900 font-bold text-xs uppercase tracking-wider">{user.fullname}</span>
                 </Link>
 
-                {/* Log Out */}
                 <button
                   onClick={handleLogout}
                   className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-red-600 transition-colors cursor-pointer"
@@ -109,7 +103,6 @@ const Navbar = () => {
             )
           )}
 
-          {/* Mobile Hamburger Toggle Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden flex items-center justify-center p-1.5 border border-zinc-200 bg-white text-zinc-700 hover:text-brand hover:border-brand transition-colors cursor-pointer btn-tactile"
@@ -121,7 +114,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation Dropdown Menu */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -156,7 +148,7 @@ const Navbar = () => {
                 isActive("/create") ? "text-brand" : "text-zinc-500 hover:text-zinc-800"
               }`}
             >
-              Write Post
+              Write Story
             </Link>
           </motion.div>
         )}

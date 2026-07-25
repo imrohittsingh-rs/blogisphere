@@ -58,7 +58,6 @@ const Profile = () => {
     <div className="min-h-screen bg-white py-12 px-6 selection:bg-amber-100 selection:text-amber-900">
       <div className="max-w-7xl mx-auto">
 
-        {/* User Card */}
         <motion.div 
           className="bg-zinc-50 border border-zinc-200/60 p-8 mb-12 flex flex-col md:flex-row items-center md:items-start gap-6 shadow-xs"
           initial={{ opacity: 0, y: 20 }}
@@ -84,7 +83,6 @@ const Profile = () => {
           </div>
         </motion.div>
 
-        {/* Published Stories section */}
         <div>
           <div className="mb-8 flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
             <div>
@@ -97,7 +95,7 @@ const Profile = () => {
                 className="flex items-center justify-center gap-2 bg-zinc-950 text-white hover:bg-brand transition-colors font-bold py-2.5 px-4 text-[10px] tracking-widest uppercase border border-zinc-950 hover:border-brand rounded-none btn-tactile"
               >
                 <FiEdit3 className="w-4 h-4" />
-                <span>Write a Post</span>
+                <span>Write a Story</span>
               </Link>
             )}
           </div>
@@ -118,7 +116,7 @@ const Profile = () => {
               <div className="w-14 h-14 bg-white border border-zinc-200 text-zinc-400 rounded-none flex items-center justify-center mx-auto mb-6 shadow-xs">
                 <FiBookOpen className="w-6 h-6 text-brand" />
               </div>
-              <h3 className="text-lg font-black text-zinc-950 mb-2 uppercase tracking-tight">No Published Articles</h3>
+              <h3 className="text-lg font-black text-zinc-950 mb-2 uppercase tracking-tight">No Published Stories</h3>
               <p className="text-zinc-500 text-sm mb-8 max-w-sm mx-auto font-normal">
                 You haven't written any stories yet. Start sharing your ideas and stories with the world today.
               </p>
@@ -127,7 +125,7 @@ const Profile = () => {
                 className="inline-flex items-center gap-2 bg-zinc-950 text-white hover:bg-brand transition-colors font-bold py-3.5 px-6 text-[10px] tracking-widest uppercase border border-zinc-950 hover:border-brand rounded-none btn-tactile"
               >
                 <FiEdit3 className="w-4 h-4" />
-                <span>Create Your First Post</span>
+                <span>Create Your First Story</span>
               </Link>
             </motion.div>
           ) : (

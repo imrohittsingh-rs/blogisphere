@@ -3,10 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { FiHome, FiBookOpen, FiEdit3, FiUser, FiArrowLeft, FiArrowRight, FiX } from 'react-icons/fi';
 
-const NotFound = () => {
-  const navigate = useNavigate();
-
-  const links = [
+const links = [
     {
       to: "/",
       title: "Home",
@@ -21,7 +18,7 @@ const NotFound = () => {
     },
     {
       to: "/create",
-      title: "Write Post",
+      title: "Write Story",
       description: "Draft your next publication",
       icon: <FiEdit3 className="w-4 h-4 text-zinc-500 group-hover:text-brand transition-colors" />
     },
@@ -33,6 +30,9 @@ const NotFound = () => {
     }
   ];
 
+const NotFound = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-6 py-16 bg-white selection:bg-amber-100 selection:text-amber-900">
       <motion.div 
@@ -41,12 +41,10 @@ const NotFound = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
-        {/* Top X Icon Container */}
         <div className="inline-flex items-center justify-center w-12 h-12 bg-zinc-50 border border-zinc-200 text-zinc-400 mb-6 shadow-xs">
           <FiX className="w-5 h-5 text-zinc-700" />
         </div>
 
-        {/* Headers */}
         <h1 className="text-3xl sm:text-4xl font-black text-zinc-950 tracking-tight leading-none mb-3">
           Page not found
         </h1>
@@ -54,7 +52,6 @@ const NotFound = () => {
           Here are some pages that might help you find what you're looking for.
         </p>
 
-        {/* 2x2 Grid of Links */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mx-auto mb-10">
           {links.map((link, idx) => (
             <Link
@@ -80,7 +77,6 @@ const NotFound = () => {
           ))}
         </div>
 
-        {/* Bottom Back Button */}
         <button
           onClick={() => navigate(-1)}
           className="inline-flex items-center gap-2 bg-zinc-950 hover:bg-brand text-white border border-zinc-950 hover:border-brand font-bold py-3.5 px-6 text-[10px] tracking-widest uppercase cursor-pointer btn-tactile"

@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { FiBookOpen, FiClock } from 'react-icons/fi';
 
-import insta2 from "../assets/insta2.png";
+import defaultBlogImage from "../assets/defaultBlogImage.png";
 
 const BlogCard = ({ blog, index = 0 }) => {
   if (!blog) return null;
 
   // Use database cover image or fallback image
-  const coverImage = blog.coverImageUrl || insta2;
+  const coverImage = blog.coverImageUrl || defaultBlogImage;
   
   // Format date
   const formattedDate = new Date(blog.createdAt).toLocaleDateString('en-US', {
@@ -36,7 +36,7 @@ const BlogCard = ({ blog, index = 0 }) => {
         <Link to={`/blog/${blog._id}`} className="flex flex-col group cursor-pointer h-full justify-between">
           
           {/* Image & Badges Container */}
-          <div className="relative aspect-[16/10] overflow-hidden bg-zinc-100 border-b border-zinc-200/40">
+          <div className="relative aspect-16/10 overflow-hidden bg-zinc-100 border-b border-zinc-200/40">
             <img
               src={coverImage}
               alt={blog.title}
@@ -44,7 +44,6 @@ const BlogCard = ({ blog, index = 0 }) => {
               loading="lazy"
             />
             
-            {/* Dark gradient shadow */}
             <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-70 group-hover:opacity-50 transition-opacity duration-300" />
 
             {/* Badges */}

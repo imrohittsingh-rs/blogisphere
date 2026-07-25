@@ -3,14 +3,55 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { getAllBlogs } from "../services/blogService.js";
 import BlogCard from "../components/BlogCard.jsx";
-import ScrollExpandMedia from "../components/ScrollExpandMedia.jsx";
-import PrevButton from "../components/PrevButton.jsx"
-import NextButton from "../components/NextButton.jsx"
-import { FiLoader, FiArrowRight, FiCode, FiCpu, FiPenTool, FiZap, FiCheckSquare, FiEdit3, FiGlobe, FiMonitor, FiSearch } from "react-icons/fi";
+import Hero from "../components/Hero.jsx";
+import PrevButton from "../components/PrevButton.jsx";
+import NextButton from "../components/NextButton.jsx";
+import SearchBar from "../components/SearchBar.jsx";
+import { FiLoader, FiCode, FiCpu, FiPenTool, FiZap, FiCheckSquare, FiEdit3, FiGlobe, FiMonitor } from "react-icons/fi";
 
-// Import custom generated assets for landing page
-import spaceIntention from '../assets/space_intention.png';
-import editorialWorkspace from '../assets/editorial_workspace.png';
+  // Explore by Category 
+  const exploreCategories = [
+    {
+      id: 'development',
+      name: 'Development',
+      icon: <FiCode className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    },
+    {
+      id: 'ai',
+      name: 'AI',
+      icon: <FiCpu className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    },
+    {
+      id: 'design',
+      name: 'Design',
+      icon: <FiPenTool className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    },
+    {
+      id: 'startups',
+      name: 'Startups',
+      icon: <FiZap className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    },
+    {
+      id: 'productivity',
+      name: 'Productivity',
+      icon: <FiCheckSquare className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    },
+    {
+      id: 'writing',
+      name: 'Writing',
+      icon: <FiEdit3 className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    },
+    {
+      id: 'technology',
+      name: 'Technology',
+      icon: <FiGlobe className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    },
+    {
+      id: 'web development',
+      name: 'Web Development',
+      icon: <FiMonitor className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
+    }
+  ];
 
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
@@ -71,96 +112,13 @@ const Home = () => {
   const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
   const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
 
-  // Explore by Category 
-  const exploreCategories = [
-    {
-      id: 'development',
-      name: 'Development',
-      icon: <FiCode className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
-    },
-    {
-      id: 'ai',
-      name: 'AI',
-      icon: <FiCpu className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
-    },
-    {
-      id: 'design',
-      name: 'Design',
-      icon: <FiPenTool className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
-    },
-    {
-      id: 'startups',
-      name: 'Startups',
-      icon: <FiZap className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
-    },
-    {
-      id: 'productivity',
-      name: 'Productivity',
-      icon: <FiCheckSquare className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
-    },
-    {
-      id: 'writing',
-      name: 'Writing',
-      icon: <FiEdit3 className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
-    },
-    {
-      id: 'technology',
-      name: 'Technology',
-      icon: <FiGlobe className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
-    },
-    {
-      id: 'web development',
-      name: 'Web Development',
-      icon: <FiMonitor className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-white font-sans text-zinc-800 antialiased selection:bg-amber-100 selection:text-amber-900">
       
-      {/* FEATURED HERO SECTION */}
-      <ScrollExpandMedia
-        mediaType="image"
-        mediaSrc={editorialWorkspace}
-        bgImageSrc={spaceIntention}
-        title="Every Great Story,Starts Here."
-        date="Ready to share your first story?"
-        scrollToExpand="Scroll to Explore"
-      >
-        <div className="max-w-xl mx-auto text-center flex flex-col items-center">
-          <span className="text-[10px] font-semibold tracking-widest text-brand uppercase mb-3 bg-brand-light/45 px-2 py-0.5">
-            Welcome to BlogiSphere
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-zinc-950 tracking-wide leading-tight mb-4">
-            Where Every Story <br />
-            Finds Its Readers.
-          </h2>
-          <p className="text-sm md:text-base text-zinc-500 leading-relaxed mb-6 font-normal max-w-[50ch] mx-auto">
-            BlogiSphere is a modern publishing platform where writers, developers, students, and creators share knowledge globally. It is where your ideas take flight and your words find their wings.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link
-              to="/create"
-              className="inline-flex items-center gap-2 bg-zinc-950 text-white hover:bg-brand border border-zinc-950 hover:border-brand transition-colors duration-200 font-bold px-6 py-3.5 text-[10px] tracking-widest uppercase btn-tactile"
-            >
-              <span>Start Writing</span>
-              <FiArrowRight className="w-3.5 h-3.5" />
-            </Link>
-            <a
-              href="#latest-stories"
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById('latest-stories')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="inline-flex items-center gap-2 bg-white text-zinc-800 hover:bg-zinc-50 hover:text-brand border border-zinc-200 transition-colors duration-200 font-bold px-6 py-3.5 text-[10px] tracking-widest uppercase btn-tactile"
-            >
-              <span>Explore Stories</span>
-            </a>
-          </div>
-        </div>
-      </ScrollExpandMedia>
+      {/* Hero Section */}
+      <Hero />
 
-      {/* TRENDING TOPICS */}
+      {/* Category Tiles */}
       <section className="max-w-7xl mx-auto px-6 py-10 border-t border-zinc-100">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
@@ -175,7 +133,6 @@ const Home = () => {
           </button>
         </div>
 
-        {/* Category Tiles */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {exploreCategories.map((topic, i) => (
             <motion.button
@@ -202,21 +159,12 @@ const Home = () => {
 
       {/* All blogs  */}
       <section id="latest-stories" className="max-w-7xl mx-auto px-6 py-12 border-t border-zinc-100">
-        
+
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <h3 className="text-lg font-bold text-zinc-950 tracking-tight">Latest Stories</h3>
           
           {/* Search Bar */}
-          <div className="relative w-full sm:max-w-xs">
-            <input
-              type="text"
-              placeholder="Search stories..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-zinc-50 text-xs text-zinc-800 placeholder-zinc-400 pl-3 pr-8 py-2.5 border border-zinc-200 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand transition-all rounded-none font-medium"
-            />
-            <FiSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 w-3.5 h-3.5 pointer-events-none" />
-          </div>
+          <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         </div>
 
         {loading ? (

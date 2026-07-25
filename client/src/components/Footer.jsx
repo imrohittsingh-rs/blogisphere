@@ -28,7 +28,7 @@ const Footer = () => {
             <ul className="flex flex-col gap-2.5">
               {[
                 { name: 'Home', link: '/' },
-                { name: 'Explore Articles', link: '/' },
+                { name: 'Explore Stories', link: '/' },
                 { name: 'Write a Story', link: '/create' },
                 { name: 'My Profile', link: '/profile' }
               ].map((item, idx) => (

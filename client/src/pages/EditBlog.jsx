@@ -62,6 +62,34 @@ const EditBlog = () => {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState("");
 
+  const [tagInput, setTagInput] = useState("");
+  const [tags, setTags] = useState([]);
+
+  const handleKeyDown = (e) => {
+    if (e.key !== "Enter") return;
+
+    e.preventDefault();
+    const tag = tagInput.trim();
+    if (tag.length > 15) {
+      setError("Tag cannot be longer than 15 characters");
+      return;
+    }
+    if (tags.length > 4) {
+      setError("You can add a maximum of 5 tags");
+      return;
+    }
+    if (tag && !tags.includes(tag)) {
+      setTags((prev) => [...prev, tag]);
+      setTagInput("");
+      setError("");
+    }
+  };
+
+  const removeTag = (tagToRemove) => {
+    setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
+    setError("");
+  };
+
   useEffect(() => {
     if (authLoading) return;
 
@@ -153,7 +181,7 @@ const EditBlog = () => {
         <div className="text-center mb-10">
           <h2 className="text-2xl font-black text-zinc-950 tracking-tight">Edit Post</h2>
           <p className="text-zinc-500 text-xs mt-2 font-medium">
-            Update your article details, narrative content, or edit the cover image.
+            Update your story details, narrative content, or edit the cover image.
           </p>
         </div>
 
@@ -167,7 +195,7 @@ const EditBlog = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-700 mb-2">
-              Publication Title <span className="text-red-500">*</span>
+              Story Title <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -202,7 +230,7 @@ const EditBlog = () => {
 
           <div>
             <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-700 mb-2">
-              Story Body Content <span className="text-red-500">*</span>
+              Content <span className="text-red-500">*</span>
             </label>
             <textarea
               name="body"
@@ -251,7 +279,7 @@ const EditBlog = () => {
 
           <div>
             <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-700 mb-2">
-              Cover Image Layout
+              Cover Image
             </label>
             {coverImage && !newCoverImage && (
               <div className="mb-4 relative overflow-hidden border border-zinc-200 h-28 w-44 bg-white shadow-xs">
