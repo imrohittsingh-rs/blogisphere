@@ -21,3 +21,7 @@ client/dist/
 
 # Uploaded files (optional)
 backend/public/uploads/
+
+# Agent custom files
+.agents/
+skills-lock.json
