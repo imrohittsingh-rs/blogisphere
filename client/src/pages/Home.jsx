@@ -4,6 +4,8 @@ import { motion } from 'motion/react';
 import { getAllBlogs } from "../services/blogService.js";
 import BlogCard from "../components/BlogCard.jsx";
 import ScrollExpandMedia from "../components/ScrollExpandMedia.jsx";
+import PrevButton from "../components/PrevButton.jsx"
+import NextButton from "../components/NextButton.jsx"
 import { FiLoader, FiArrowRight, FiCode, FiCpu, FiPenTool, FiZap, FiCheckSquare, FiEdit3, FiGlobe, FiMonitor, FiSearch } from "react-icons/fi";
 
 // Import custom generated assets for landing page
@@ -18,6 +20,7 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // fetch all blogs
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
@@ -32,28 +35,44 @@ const Home = () => {
     fetchBlogs();
   }, []);
 
-  // Filter dynamic blogs based on category and search query selection
+  // Filter dynamic blogs based search query selection
+  const query = searchQuery.toLowerCase();
   const filteredBlogs = blogs.filter((blog) => {
-    const matchesCategory = !selectedCategory || 
-      blog.category?.toLowerCase() === selectedCategory.toLowerCase() ||
-      blog.tags?.some(tag => tag.toLowerCase() === selectedCategory.toLowerCase());
+    const matchesSearch =
+      blog.title.toLowerCase().includes(query) ||
+      blog.body.toLowerCase().includes(query) ||
+      blog.category.toLowerCase().includes(query) ||
+      blog.tags?.some(tag => tag.toLowerCase().includes(query)) ||
+      blog.createdBy.fullname.toLowerCase().includes(query) ||
+      blog.createdBy.email.toLowerCase().includes(query);
 
-    const matchesSearch = !searchQuery || 
-      blog.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      blog.body?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      blog.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      blog.category?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      !selectedCategory ||
+      blog.category.toLowerCase() === selectedCategory;
 
-    return matchesCategory && matchesSearch;
+    return matchesSearch && matchesCategory;
   });
 
+
   const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
-    setCurrentPage(1);
+    setSelectedCategory(prev => prev === category ? "" : category);
   };
 
-  // Categories metadata for Trending Topics
-  const trendingTopics = [
+  // Pagination calculations
+  const blogsPerPage = 6;
+  const totalPages = Math.ceil(filteredBlogs.length / blogsPerPage) || 1;
+
+  // Reset to Page 1
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory])
+
+  const indexOfLastBlog = currentPage * blogsPerPage;
+  const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
+  const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
+
+  // Explore by Category 
+  const exploreCategories = [
     {
       id: 'development',
       name: 'Development',
@@ -90,7 +109,7 @@ const Home = () => {
       icon: <FiGlobe className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
     },
     {
-      id: 'web-development',
+      id: 'web development',
       name: 'Web Development',
       icon: <FiMonitor className="w-4 h-4 text-zinc-600 group-hover:text-brand transition-colors" />
     }
@@ -158,10 +177,10 @@ const Home = () => {
 
         {/* Category Tiles */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {trendingTopics.map((topic, i) => (
+          {exploreCategories.map((topic, i) => (
             <motion.button
               key={topic.id}
-              onClick={() => setSelectedCategory(selectedCategory === topic.id ? "" : topic.id)}
+              onClick={() => handleCategoryClick(topic.id)}
               className={`flex items-center gap-3.5 py-4 px-5 bg-zinc-50/50 border transition-all duration-200 cursor-pointer group ${
                 selectedCategory === topic.id 
                   ? 'border-brand bg-brand-light/35' 
@@ -181,8 +200,9 @@ const Home = () => {
         </div>
       </section>
 
-      {/* LATEST STORIES */}
+      {/* All blogs  */}
       <section id="latest-stories" className="max-w-7xl mx-auto px-6 py-12 border-t border-zinc-100">
+        
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <h3 className="text-lg font-bold text-zinc-950 tracking-tight">Latest Stories</h3>
           
@@ -214,34 +234,22 @@ const Home = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-            {filteredBlogs.map((blog, index) => (
+            {currentBlogs.map((blog, index) => (
               <BlogCard key={blog._id} blog={blog} index={index} />
             ))}
+            
           </div>
         )}
 
         {/* PAGINATION */}
-        <div className="mt-16 flex items-center justify-center gap-2">
-          {[1, 2, 3].map((page) => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              className={`w-9 h-9 flex items-center justify-center text-xs font-bold transition-all duration-200 cursor-pointer ${
-                currentPage === page
-                  ? 'bg-brand text-white'
-                  : 'bg-white text-zinc-500 border border-zinc-200 hover:border-zinc-400 hover:text-zinc-800'
-              }`}
-            >
-              {page} 
-            </button>
-          ))}
-          <button
-            onClick={() => setCurrentPage(prev => Math.min(3, prev + 1))}
-            className="w-9 h-9 flex items-center justify-center text-xs font-bold bg-white text-zinc-500 border border-zinc-200 hover:border-zinc-400 hover:text-zinc-800 transition-all duration-200 cursor-pointer"
-            title="Next Page"
-          >
-            &rsaquo;
-          </button>
+        <div className="mt-16 flex items-center justify-center gap-4">
+          <PrevButton currentPage={currentPage} setCurrentPage={setCurrentPage} />
+
+          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest select-none">
+            Page {currentPage} of {totalPages}
+          </span>
+
+          <NextButton setCurrentPage={setCurrentPage} disabled={currentPage === totalPages} />
         </div>
       </section>
 
