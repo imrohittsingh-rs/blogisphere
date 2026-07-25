@@ -227,7 +227,7 @@ const BlogDetails = () => {
             </div>
 
             {/* Title */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-zinc-950 tracking-tight leading-tight mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-zinc-950 tracking-wide leading-tight mb-8">
               {blog.title}
             </h1>
 
@@ -268,7 +268,7 @@ const BlogDetails = () => {
           )}
 
           {/* Body */}
-          <section className="text-zinc-800 leading-relaxed text-base md:text-[17px] whitespace-pre-line font-normal max-w-[72ch] mx-auto">
+          <section className="text-zinc-700 leading-relaxed text-base md:text-[17px] whitespace-pre-line font-normal max-w-[65ch] mx-auto font-sans">
             {blog.body}
           </section>
         </motion.article>

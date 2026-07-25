@@ -3,14 +3,13 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { FiBookOpen, FiClock } from 'react-icons/fi';
 
-// Import fallback image for when coverImageUrl is not provided
-import editorialWorkspace from '../assets/images/munfarid/editorial_workspace.png';
+import insta2 from "../assets/insta2.png";
 
 const BlogCard = ({ blog, index = 0 }) => {
   if (!blog) return null;
 
   // Use database cover image or fallback image
-  const coverImage = blog.coverImageUrl || editorialWorkspace;
+  const coverImage = blog.coverImageUrl || insta2;
   
   // Format date
   const formattedDate = new Date(blog.createdAt).toLocaleDateString('en-US', {
@@ -75,7 +74,7 @@ const BlogCard = ({ blog, index = 0 }) => {
           {/* Content Body */}
           <div className="flex flex-col flex-grow p-5 justify-between gap-5">
             <div className="space-y-2">
-              <h3 className="text-base font-bold text-zinc-950 leading-snug tracking-tight group-hover:text-brand transition-colors duration-200 line-clamp-2">
+              <h3 className="text-base font-serif text-zinc-950 leading-snug tracking-wide group-hover:text-brand transition-colors duration-200 line-clamp-2">
                 {blog.title}
               </h3>
               <p className="text-xs text-zinc-500 leading-relaxed font-normal line-clamp-2">

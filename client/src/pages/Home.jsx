@@ -7,8 +7,8 @@ import ScrollExpandMedia from "../components/ScrollExpandMedia.jsx";
 import { FiLoader, FiArrowRight, FiCode, FiCpu, FiPenTool, FiZap, FiCheckSquare, FiEdit3, FiGlobe, FiMonitor, FiSearch } from "react-icons/fi";
 
 // Import custom generated assets for landing page
-import spaceIntention from '../assets/images/munfarid/space_intention.png';
-import editorialWorkspace from '../assets/images/munfarid/editorial_workspace.png';
+import spaceIntention from '../assets/space_intention.png';
+import editorialWorkspace from '../assets/editorial_workspace.png';
 
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
@@ -46,6 +46,11 @@ const Home = () => {
 
     return matchesCategory && matchesSearch;
   });
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
+  };
 
   // Categories metadata for Trending Topics
   const trendingTopics = [
@@ -92,7 +97,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white font-poppins text-zinc-800 antialiased selection:bg-amber-100 selection:text-amber-900">
+    <div className="min-h-screen bg-white font-sans text-zinc-800 antialiased selection:bg-amber-100 selection:text-amber-900">
       
       {/* FEATURED HERO SECTION */}
       <ScrollExpandMedia
@@ -104,14 +109,14 @@ const Home = () => {
         scrollToExpand="Scroll to Explore"
       >
         <div className="max-w-xl mx-auto text-center flex flex-col items-center">
-          <span className="text-[10px] font-black tracking-widest text-brand uppercase mb-3 bg-brand-light px-2 py-0.5">
+          <span className="text-[10px] font-semibold tracking-widest text-brand uppercase mb-3 bg-brand-light/45 px-2 py-0.5">
             Welcome to BlogiSphere
           </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-zinc-950 tracking-tight leading-tight mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-zinc-950 tracking-wide leading-tight mb-4">
             Where Every Story <br />
             Finds Its Readers.
           </h2>
-          <p className="text-sm text-zinc-500 leading-relaxed mb-6 font-normal max-w-[45ch] mx-auto">
+          <p className="text-sm md:text-base text-zinc-500 leading-relaxed mb-6 font-normal max-w-[50ch] mx-auto">
             BlogiSphere is a modern publishing platform where writers, developers, students, and creators share knowledge globally. It is where your ideas take flight and your words find their wings.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
@@ -140,12 +145,12 @@ const Home = () => {
       <section className="max-w-7xl mx-auto px-6 py-10 border-t border-zinc-100">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h3 className="text-lg font-black text-zinc-950 tracking-tight">Explore by Category</h3>
+            <h3 className="text-lg font-bold text-zinc-950 tracking-tight">Explore by Category</h3>
             <p className="text-xs text-zinc-400 mt-1 font-medium">Discover stories across your favorite interests.</p>
           </div>
           <button
             onClick={() => setSelectedCategory("")}
-            className="text-[10px] font-black tracking-widest text-zinc-400 hover:text-brand uppercase transition-colors self-start sm:self-auto cursor-pointer border border-zinc-200/65 py-1 px-3"
+            className="text-[10px] font-bold tracking-widest text-zinc-400 hover:text-brand uppercase transition-colors self-start sm:self-auto cursor-pointer border border-zinc-200/65 py-1 px-3"
           >
             Clear Filter
           </button>
@@ -179,7 +184,7 @@ const Home = () => {
       {/* LATEST STORIES */}
       <section id="latest-stories" className="max-w-7xl mx-auto px-6 py-12 border-t border-zinc-100">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <h3 className="text-lg font-black text-zinc-950 tracking-tight">Latest Stories</h3>
+          <h3 className="text-lg font-bold text-zinc-950 tracking-tight">Latest Stories</h3>
           
           {/* Search Bar */}
           <div className="relative w-full sm:max-w-xs">

@@ -7,7 +7,7 @@ import AppRoutes from "./routes/AppRoutes";
 
 const MainLayout = () => {
   return (
-    <div className="flex flex-col min-h-screen bg-white text-zinc-800 font-poppins selection:bg-[#f4c34a] selection:text-zinc-900">
+    <div className="flex flex-col min-h-screen bg-white text-zinc-800 font-sans selection:bg-[#f4c34a] selection:text-zinc-900">
       <Navbar />
       <main className="grow">
         <AppRoutes />
