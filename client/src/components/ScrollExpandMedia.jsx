@@ -1,23 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 
 const ScrollExpandMedia = ({
-  mediaType = 'image',
+  mediaType,
   mediaSrc,
   bgImageSrc,
   title,
-  date,
-  scrollToExpand = "Scroll to Expand",
+  subTitle,
+  tag,
   textBlend = false,
   children,
 }) => {
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0); // range from 0 to 1
   const [showContent, setShowContent] = useState(false);
   const [mediaFullyExpanded, setMediaFullyExpanded] = useState(false);
   const [touchStartY, setTouchStartY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-
-  const sectionRef = useRef(null);
 
   useEffect(() => {
     setScrollProgress(0);
@@ -25,6 +23,7 @@ const ScrollExpandMedia = ({
     setMediaFullyExpanded(false);
   }, [mediaType]);
 
+  // mouse wheel event handler - logic of increasing/decreasing scroll progress
   useEffect(() => {
     const handleWheel = (e) => {
       if (mediaFullyExpanded && e.deltaY < 0 && window.scrollY <= 5) {
@@ -32,6 +31,7 @@ const ScrollExpandMedia = ({
         e.preventDefault();
       } else if (!mediaFullyExpanded) {
         e.preventDefault();
+        // for gentle scroll effect
         const scrollDelta = e.deltaY * 0.0009;
         const newProgress = Math.min(
           Math.max(scrollProgress + scrollDelta, 0),
@@ -49,6 +49,7 @@ const ScrollExpandMedia = ({
     };
 
     const handleTouchStart = (e) => {
+      // console.log(e.touches)
       setTouchStartY(e.touches[0].clientY);
     };
 
@@ -124,10 +125,7 @@ const ScrollExpandMedia = ({
   const restOfTitle = title ? title.split(",").slice(1).join(", ") : '';
 
   return (
-    <div
-      ref={sectionRef}
-      className='transition-colors duration-700 ease-in-out overflow-x-hidden w-full'
-    >
+    <div className='transition-colors duration-700 ease-in-out overflow-x-hidden w-full'>
       <section className='relative flex flex-col items-center justify-start min-h-[100vh] w-full'>
         <div className='relative w-full flex flex-col items-center min-h-[100vh]'>
           
@@ -226,20 +224,20 @@ const ScrollExpandMedia = ({
 
                 {/* Inside-Media Floating Text */}
                 <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-center z-10 w-full px-4'>
-                  {date && (
+                  {subTitle && (
                     <p
                       className='text-sm md:text-md md:font-bold font-semibold uppercase tracking-wider text-zinc-100 mb-1 drop-shadow-md'
                       style={{ transform: `translateX(-${textTranslateX}vw)` }}
                     >
-                      {date}
+                      {subTitle}
                     </p>
                   )}
-                  {scrollToExpand && (
+                  {tag && (
                     <p
                       className='text-[10px] font-semibold uppercase tracking-widest text-brand-light drop-shadow-md animate-pulse'
                       style={{ transform: `translateX(${textTranslateX}vw)` }}
                     >
-                      {scrollToExpand}
+                      {tag}
                     </p>
                   )}
                 </div>

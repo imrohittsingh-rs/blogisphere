@@ -16,8 +16,8 @@ const Hero = () => {
       mediaSrc={editorialWorkspace}
       bgImageSrc={spaceIntention}
       title="Every Great Story,Starts Here."
-      date="Ready to share your first story?"
-      scrollToExpand="Scroll to Explore"
+      subTitle="Ready to share your first story?"
+      tag="Scroll to Explore"
     >
       <div className="max-w-xl mx-auto text-center flex flex-col items-center">
         <span className="text-[10px] font-semibold tracking-widest text-brand uppercase mb-3 bg-brand-light/45 px-2 py-0.5">
