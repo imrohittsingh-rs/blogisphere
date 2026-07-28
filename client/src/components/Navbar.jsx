@@ -13,6 +13,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
+      if(!window.confirm("Are you sure you want to log out?")) return;
       await logout();
       toast.success("Logged out successfully!");
       setIsMenuOpen(false);
